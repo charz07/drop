@@ -19,3 +19,9 @@ export async function submitRankings(rankings, userId) {
   if (!res.ok) throw new Error('Failed to submit rankings')
   return res.json()
 }
+
+export async function getProfile(userId) {
+  const res = await fetch(`${API_BASE}/profile/?user_id=${userId}`)
+  if (!res.ok) throw new Error('Failed to fetch profile')
+  return res.json()
+}

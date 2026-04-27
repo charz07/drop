@@ -63,6 +63,20 @@ def save_rankings(user_id: str, rankings: list[dict]):
     supabase.table("rankings").upsert(rows, on_conflict="user_id,brand_id").execute()
 
 
+def get_user_profile(user_id: str) -> list[dict]:
+    response = (
+        supabase.table("rankings")
+        .select("rank, brands(id, name, description)")
+        .eq("user_id", user_id)
+        .order("rank")
+        .execute()
+    )
+    return [
+        {"rank": row["rank"], **row["brands"]}
+        for row in response.data
+    ]
+
+
 def get_user_ranked_brands(user_id: str) -> list[dict]:
     response = (
         supabase.table("rankings")

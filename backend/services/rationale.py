@@ -29,3 +29,23 @@ async def generate_rationales(taste_description: str, brands: list[dict]) -> lis
         generate_rationale(taste_description, brand["name"], brand["description"])
         for brand in brands
     ])
+
+
+async def generate_taste_summary(top_brands: list[dict]) -> str:
+    brand_lines = "\n".join(
+        f"- {b['name']} (ranked #{b['rank']}): {b['description']}"
+        for b in top_brands
+    )
+    prompt = (
+        "Based on the brands this person has consistently ranked highest, "
+        "write 2 sentences describing their taste profile. "
+        "Be specific about flavors, textures, and sensory qualities. "
+        "Do not name the brands. Do not use marketing language.\n\n"
+        f"Their top-ranked brands:\n{brand_lines}"
+    )
+    response = await client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=120,
+    )
+    return response.choices[0].message.content.strip()

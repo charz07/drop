@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function TasteInput({ onSubmit, loading }) {
+export default function TasteInput({ onSubmit, loading, onProfile }) {
   const [text, setText] = useState('')
 
   function handleSubmit(e) {
@@ -25,6 +25,9 @@ export default function TasteInput({ onSubmit, loading }) {
           {loading ? 'Finding your drop…' : 'Get my drop →'}
         </button>
       </form>
+      <button type="button" className="profile-link" onClick={onProfile}>
+        View your taste profile →
+      </button>
     </div>
   )
 }

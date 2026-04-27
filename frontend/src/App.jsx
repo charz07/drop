@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import TasteInput from './pages/TasteInput'
 import Drop from './pages/Drop'
+import Profile from './pages/Profile'
 import { getRecommendations } from './api/recommendations'
 
 function getUserId() {
@@ -42,10 +43,13 @@ export default function App() {
     <div className="app">
       {error && <div className="error-banner">{error}</div>}
       {screen === 'input' && (
-        <TasteInput onSubmit={handleSubmit} loading={loading} />
+        <TasteInput onSubmit={handleSubmit} loading={loading} onProfile={() => setScreen('profile')} />
       )}
       {screen === 'drop' && (
         <Drop brands={brands} userId={userId} onRestart={handleRestart} />
+      )}
+      {screen === 'profile' && (
+        <Profile userId={userId} onBack={() => setScreen('input')} />
       )}
     </div>
   )
