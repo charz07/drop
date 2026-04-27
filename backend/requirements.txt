@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+google-genai
+supabase
+numpy
+scikit-learn
+python-dotenv
+groq
