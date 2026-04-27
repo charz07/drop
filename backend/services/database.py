@@ -60,4 +60,14 @@ def save_drop_history(user_id: str, brand_ids: list[str]):
 
 def save_rankings(user_id: str, rankings: list[dict]):
     rows = [{"user_id": user_id, "brand_id": r["brand_id"], "rank": r["rank"]} for r in rankings]
-    supabase.table("rankings").insert(rows).execute()
+    supabase.table("rankings").upsert(rows, on_conflict="user_id,brand_id").execute()
+
+
+def get_user_ranked_brands(user_id: str) -> list[dict]:
+    response = (
+        supabase.table("rankings")
+        .select("rank, brands(vector)")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return [{"rank": row["rank"], "vector": row["brands"]["vector"]} for row in response.data]

@@ -11,6 +11,7 @@ export default function BrandCard({ brand, rank, onRank }) {
         {[1, 2, 3, 4].map((n) => (
           <button
             key={n}
+            type="button"
             className={`rank-btn ${rank === n ? 'active' : ''}`}
             onClick={() => onRank(brand.name, n)}
           >

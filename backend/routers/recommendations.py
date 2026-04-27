@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from models.schemas import TasteProfileRequest, DropResponse, BrandOut
 from services.embeddings import embed_text
-from services.matching import generate_drop
-from services.database import fetch_brand_catalog, get_drop_history, save_drop_history, ensure_user_exists
+from services.matching import generate_drop, build_preference_vector, blend_vectors
+from services.database import fetch_brand_catalog, get_drop_history, save_drop_history, ensure_user_exists, get_user_ranked_brands
 
 router = APIRouter()
 
@@ -16,6 +16,12 @@ async def get_recommendations(request: TasteProfileRequest, user_id: str):
         raise HTTPException(status_code=503, detail="Brand catalog not available")
 
     user_vector = embed_text(request.taste_description)
+
+    ranked_brands = get_user_ranked_brands(user_id)
+    if ranked_brands:
+        pref_vec = build_preference_vector(ranked_brands)
+        user_vector = blend_vectors(user_vector, pref_vec)
+
     already_received = get_drop_history(user_id)
     drop = generate_drop(user_vector, brand_catalog, already_received)
     save_drop_history(user_id, [brand["id"] for brand in drop])
