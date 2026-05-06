@@ -27,5 +27,15 @@ def seed(brands):
     print("Done.")
 
 
+def update_urls(brands):
+    print(f"Updating URLs for {len(brands)} brands...")
+    for brand in brands:
+        if not brand.get("url"):
+            continue
+        supabase.table("brands").update({"url": brand["url"]}).eq("name", brand["name"]).execute()
+        print(f"  → {brand['name']}")
+    print("Done.")
+
+
 if __name__ == "__main__":
-    seed(NEW_BRANDS)
+    update_urls(SEED_BRANDS + NEW_BRANDS)

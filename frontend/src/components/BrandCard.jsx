@@ -3,7 +3,14 @@ export default function BrandCard({ brand, rank, onRank, rejected, onReject }) {
     <div className={`brand-card ${rank ? 'ranked' : ''} ${rejected ? 'rejected' : ''}`}>
       <div className="brand-card-header">
         <h3>{brand.name}</h3>
-        <span className="match-score">{Math.round(brand.match_score * 100)}% match</span>
+        <div className="brand-card-meta">
+          {brand.url && (
+            <a href={brand.url} target="_blank" rel="noopener noreferrer" className="brand-link">
+              Visit →
+            </a>
+          )}
+          <span className="match-score">{Math.round(brand.match_score * 100)}% match</span>
+        </div>
       </div>
       <p className="brand-description">{brand.description}</p>
       {!rejected && (

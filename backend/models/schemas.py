@@ -10,6 +10,7 @@ class BrandOut(BaseModel):
     name: str
     description: str
     match_score: float
+    url: str | None = None
 
 
 class DropResponse(BaseModel):
