@@ -47,5 +47,15 @@ def update_images(brands):
     print("Done.")
 
 
+def update_tags(brands):
+    print(f"Updating tags for {len(brands)} brands...")
+    for brand in brands:
+        if not brand.get("tags"):
+            continue
+        supabase.table("brands").update({"tags": brand["tags"]}).eq("name", brand["name"]).execute()
+        print(f"  → {brand['name']}")
+    print("Done.")
+
+
 if __name__ == "__main__":
-    update_images(SEED_BRANDS + NEW_BRANDS)
+    update_tags(SEED_BRANDS + NEW_BRANDS)

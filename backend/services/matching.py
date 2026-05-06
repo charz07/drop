@@ -35,20 +35,36 @@ def blend_vectors(query_vec: list[float], pref_vec: list[float], alpha: float = 
     blended = blended / np.linalg.norm(blended)
     return blended.tolist()
 
+def build_tag_affinity(ranked_brands: list[dict]) -> dict[str, float]:
+    if not ranked_brands:
+        return {}
+    max_rank = max(b["rank"] for b in ranked_brands)
+    tag_weights = {}
+    for brand in ranked_brands:
+        weight = float(max_rank + 1 - brand["rank"])
+        for tag in (brand.get("tags") or []):
+            tag_weights[tag] = tag_weights.get(tag, 0) + weight
+    total = sum(tag_weights.values())
+    return {tag: w / total for tag, w in tag_weights.items()} if total else {}
+
+
 def generate_drop(
     user_vector: list[float],
     brand_catalog: list[dict],
     already_received: list[str],
     rejected_ids: list[str] = None,
+    ranked_brands: list[dict] = None,
     n: int = 4
 ) -> list[dict]:
     excluded = set(rejected_ids or []) | set(already_received or [])
+    tag_affinity = build_tag_affinity(ranked_brands or [])
     scores = []
     for brand in brand_catalog:
         if brand["id"] in excluded:
             continue
-        score = cosine_similarity(user_vector, brand["vector"])
-        scores.append((brand, score))
+        cosine_score = cosine_similarity(user_vector, brand["vector"])
+        tag_score = sum(tag_affinity.get(tag, 0) for tag in (brand.get("tags") or []))
+        scores.append((brand, cosine_score + 0.15 * tag_score))
     scores.sort(key=lambda x: x[1], reverse=True)
     return [
         {**brand, "match_score": round(score, 4)}

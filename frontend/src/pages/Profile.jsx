@@ -27,6 +27,17 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
         <p className="taste-summary">{summary}</p>
       )}
 
+      {!fetching && brands.length > 0 && (() => {
+        const tagCounts = {}
+        brands.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
+        const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t)
+        return topTags.length > 0 && (
+          <div className="profile-tags">
+            {topTags.map((tag) => <span key={tag} className="brand-tag">{tag}</span>)}
+          </div>
+        )
+      })()}
+
       {!fetching && brands.length > 0 && (
         <div className="profile-brand-list">
           {brands.map((brand) => (

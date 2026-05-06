@@ -18,6 +18,13 @@ export default function BrandCard({ brand, rank, onRank, rejected, onReject }) {
           <span className="match-score">{Math.round(brand.match_score * 100)}% match</span>
         </div>
       </div>
+      {brand.tags?.length > 0 && (
+        <div className="brand-tags">
+          {brand.tags.map((tag) => (
+            <span key={tag} className="brand-tag">{tag}</span>
+          ))}
+        </div>
+      )}
       <p className="brand-description">{brand.description}</p>
       {!rejected && (
         <div className="rank-buttons">

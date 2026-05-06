@@ -26,7 +26,7 @@ async def get_recommendations(request: TasteProfileRequest, user_id: str):
 
     already_received = get_drop_history(user_id)
     rejected_ids = get_user_rejection_ids(user_id)
-    drop = generate_drop(user_vector, brand_catalog, already_received, rejected_ids)
+    drop = generate_drop(user_vector, brand_catalog, already_received, rejected_ids, ranked_brands=ranked_brands)
     save_drop_history(user_id, [brand["id"] for brand in drop])
 
     return DropResponse(drop=[BrandOut(**brand) for brand in drop])
