@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { getProfile } from '../api/recommendations'
 
-export default function Profile({ userId, onBack }) {
+export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) {
   const [brands, setBrands] = useState([])
   const [summary, setSummary] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [fetching, setFetching] = useState(true)
 
   useEffect(() => {
     getProfile(userId).then((data) => {
       setBrands(data.brands)
       setSummary(data.summary)
-      setLoading(false)
+      setFetching(false)
     })
   }, [userId])
 
@@ -21,17 +21,13 @@ export default function Profile({ userId, onBack }) {
         <p className="drop-subtitle">Built from everything you've ranked.</p>
       </div>
 
-      {loading && <p className="muted">Loading…</p>}
+      {fetching && <p className="muted">Loading…</p>}
 
-      {!loading && brands.length === 0 && (
-        <p className="muted">No rankings yet. Get a drop first.</p>
-      )}
-
-      {!loading && summary && (
+      {!fetching && summary && (
         <p className="taste-summary">{summary}</p>
       )}
 
-      {!loading && brands.length > 0 && (
+      {!fetching && brands.length > 0 && (
         <div className="profile-brand-list">
           {brands.map((brand) => (
             <div key={brand.id} className="profile-brand-card">
@@ -45,9 +41,18 @@ export default function Profile({ userId, onBack }) {
         </div>
       )}
 
-      <button type="button" className="restart-btn" style={{ marginTop: '2rem' }} onClick={onBack}>
-        ← Back
-      </button>
+      {!fetching && brands.length === 0 && (
+        <p className="muted">No rankings yet.</p>
+      )}
+
+      <div className="drop-actions" style={{ marginTop: '2rem' }}>
+        <button type="button" className="submit-btn" onClick={onNextDrop} disabled={loading}>
+          {loading ? 'Finding your drop…' : 'Get next drop →'}
+        </button>
+        <button type="button" className="profile-link" onClick={onUpdateTaste}>
+          Update taste description
+        </button>
+      </div>
     </div>
   )
 }

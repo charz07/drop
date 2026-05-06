@@ -13,14 +13,24 @@ function getUserId() {
   return id
 }
 
+function getSavedTaste() {
+  return localStorage.getItem('drop_taste') || ''
+}
+
+function saveTaste(taste) {
+  localStorage.setItem('drop_taste', taste)
+}
+
 export default function App() {
-  const [screen, setScreen] = useState('input')
+  const userId = getUserId()
+  const savedTaste = getSavedTaste()
+
+  const [screen, setScreen] = useState(savedTaste ? 'input' : 'input')
   const [brands, setBrands] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const userId = getUserId()
 
-  async function handleSubmit(tasteDescription) {
+  async function fetchDrop(tasteDescription) {
     setLoading(true)
     setError(null)
     try {
@@ -34,8 +44,20 @@ export default function App() {
     }
   }
 
-  function handleRestart() {
-    setBrands([])
+  async function handleSubmit(tasteDescription) {
+    saveTaste(tasteDescription)
+    await fetchDrop(tasteDescription)
+  }
+
+  function handleRankingsSubmitted() {
+    setScreen('profile')
+  }
+
+  function handleNextDrop() {
+    fetchDrop(getSavedTaste())
+  }
+
+  function handleUpdateTaste() {
     setScreen('input')
   }
 
@@ -43,13 +65,26 @@ export default function App() {
     <div className="app">
       {error && <div className="error-banner">{error}</div>}
       {screen === 'input' && (
-        <TasteInput onSubmit={handleSubmit} loading={loading} onProfile={() => setScreen('profile')} />
+        <TasteInput
+          onSubmit={handleSubmit}
+          loading={loading}
+          savedTaste={savedTaste}
+        />
       )}
       {screen === 'drop' && (
-        <Drop brands={brands} userId={userId} onRestart={handleRestart} />
+        <Drop
+          brands={brands}
+          userId={userId}
+          onRankingsSubmitted={handleRankingsSubmitted}
+        />
       )}
       {screen === 'profile' && (
-        <Profile userId={userId} onBack={() => setScreen('input')} />
+        <Profile
+          userId={userId}
+          onNextDrop={handleNextDrop}
+          onUpdateTaste={handleUpdateTaste}
+          loading={loading}
+        />
       )}
     </div>
   )

@@ -10,6 +10,29 @@ supabase: Client = create_client(
 )
 
 
+NEW_BRANDS = [
+    {"name": "Olipop", "description": "Prebiotic soda built on botanical fiber blends — vintage cola, cream soda, and cherry vanilla with lighter sweetness and a faint herbal undertone from root and bark extracts. Less sweet than regular soda with gentle carbonation and a clean finish. For people who want soda nostalgia without the sugar crash."},
+    {"name": "Poppi", "description": "Fruit-forward prebiotic soda with apple cider vinegar woven in — watermelon, raspberry rose, ginger lime — lending bright tartness that sharpens the fruit without tasting like vinegar. Light and refreshing, closer to sparkling juice than soda. For people who want something sweet but with a tangy, functional edge."},
+    {"name": "Momofuku", "description": "Air-dried noodles with serious springy chew, plus a Chili Crunch built from three chili varieties, crispy garlic, shallots, and sesame in smoky oil. The Tingly variety adds Sichuan peppercorn numbing heat that builds slowly. Umami-forward with layers of crunch, heat, and savory depth."},
+    {"name": "Brightland", "description": "Cold-pressed California extra-virgin olive oil from heirloom olives harvested and pressed within 90 minutes. Bright, grassy, and fruity with a clean peppery finish that signals freshness. The flavor is too vivid to cook away — best for finishing and drizzling."},
+    {"name": "Burlap & Barrel", "description": "Single-origin spices sourced directly from small farms — Aleppo pepper with fruity warmth and mild heat, Black Urfa chili with smoky earthiness, Royal Cinnamon with floral sweetness unlike any jar on a grocery shelf. Dramatically more vivid than commodity spices. For people who cook with intention."},
+    {"name": "Siete Foods", "description": "Grain-free tortilla chips from cassava and coconut flour with a light, airy crunch and subtle buttery flavor — cleaner and less heavy than corn. Lime delivers bright citrus pop, sea salt is simple and addictive. For people who want a chip that doesn't leave you feeling weighed down."},
+    {"name": "De La Calle", "description": "Canned tepache — traditional Mexican fermented pineapple drink — lighter than kombucha, sweeter than shrubs, with gentle tropical fruitiness and mild spice from cinnamon and pepper. Soft effervescence and no vinegary funk. For people who want a fermented drink without the acquired taste."},
+    {"name": "Sunwink", "description": "Lightly effervescent herbal sparkling tonics — Lemon Rose with bright citrus and floral zing, Detox Ginger with clean spice and no syrupy sweetness, Hibiscus Mint with tart berry coolness. Botanical complexity without bitterness or stevia aftertaste. For people who want sparkling water that actually tastes like something."},
+    {"name": "Solely", "description": "Single-ingredient whole fruit jerky — mango, pineapple, guava — with no added sugar, just concentrated fruit flavor and a soft, pliable chew that's less sticky than fruit leather. Mango is intensely tropical, pineapple is bright and acidic. For people who want a snack that tastes like the actual fruit."},
+    {"name": "Seed + Mill", "description": "Ultra-smooth tahini made exclusively from Ethiopian Humera sesame seeds — nutty, lightly bitter, and deeply rich with a pourable consistency that hardly needs stirring. Roasted Garlic adds caramelized depth; Za'atar brings earthy tartness. For people who think tahini should be a destination ingredient, not a condiment."},
+    {"name": "Kettle & Fire", "description": "Slow-simmered bone broth from grass-fed beef and pasture-raised chicken — deep, collagen-rich, and savory with a clean meaty depth that store broth can't match. Turmeric Ginger adds warming spice and anti-inflammatory complexity. Rich enough to sip straight, versatile enough to build a sauce around."},
+    {"name": "LesserEvil", "description": "Organic popcorn air-popped in coconut oil with Himalayan pink salt — light and crispy with subtle coconutty butteriness and clean, balanced saltiness. No artificial anything. For people who want popcorn that tastes like popcorn, not a flavor lab experiment."},
+    {"name": "Lavva", "description": "Pili nut and plantain yogurt with live cultures — naturally creamy from pili nut fat, lightly sweet from plantain, with gentle tang and a soft coconut undertone. No added gums or sugar. Lighter in body than dairy Greek yogurt with a clean, uncluttered finish."},
+    {"name": "Good Culture", "description": "Cottage cheese made with cold-fermented whole milk and six live cultures — creamy, fresh, and gently tangy in a way that mass-market brands lack. Less salty than most with a soft curd texture. Works sweet with fruit or savory with olive oil equally well."},
+    {"name": "Minna", "description": "Sparkling brewed tea — Peach Yuzu Green, Lime Hibiscus Rooibos, Pineapple Passionfruit — with real brewed tea flavor, delicate effervescence, and zero sugar or sweeteners. Tastes like iced tea with natural fruit brightness, not like flavored water pretending to be tea."},
+    {"name": "Sour Strips", "description": "Thick, chewy sour candy strips with sustained tartness that builds before mellowing into bold fruit flavor — blue raspberry, wild cherry, tropical mango. More intense than most candy-aisle sours without tipping into artificial harshness. For people who take their sour candy seriously."},
+    {"name": "Deux", "description": "Functional cookie dough made from cashew butter, oat flour, and coconut sugar — Brownie Batter delivers rich cocoa depth, Chocolate Chip has genuine buttery sweetness, Mint Chocolate brings clean coolness. Softer and more spreadable than traditional dough. For people who eat cookie dough straight from the jar."},
+    {"name": "Forager Project", "description": "Cashew and coconut milk yogurt with live probiotic cultures — mildly tangy, naturally creamy, with gentle cashew sweetness and a lighter body than dairy. Vanilla Bean and fruit varieties have clean flavor without artificial aftertaste. For people who want dairy-free yogurt that actually has the texture of yogurt."},
+    {"name": "REBBL", "description": "Coconut milk protein elixirs — Dark Chocolate with rich cocoa depth and a slight bitter edge, Vanilla Spice with horchata-like warmth and creaminess, Salted Caramel with indulgent balance. 20g plant protein without the chalky aftertaste. For people who want a meal replacement that tastes like dessert."},
+    {"name": "Purely Elizabeth", "description": "Ancient grain granola sweetened with coconut sugar — deeply toasty clusters with caramel-like depth, warm cinnamon, and a salty-sweet balance more complex than standard oat granola. Large chunks hold up in milk without going soggy. For people who think granola should be a flavor experience, not just a cereal backdrop."},
+]
+
 SEED_BRANDS = [
     {"name": "Fly By Jing", "description": "Bold Sichuan chili sauces with numbing heat, deep umami, and fermented complexity. Layered spice that builds slowly with a savory, almost smoky finish. For people who want heat with substance."},
     {"name": "Diaspora Co.", "description": "Single-origin Indian spices with bright, aromatic intensity. Turmeric with earthy warmth, pepper with floral heat, chili with fruity depth. Clean and vivid — nothing muddled."},
@@ -75,6 +98,28 @@ def get_user_profile(user_id: str) -> list[dict]:
         {"rank": row["rank"], **row["brands"]}
         for row in response.data
     ]
+
+
+def save_rejections(user_id: str, brand_ids: list[str]):
+    if not brand_ids:
+        return
+    rows = [{"user_id": user_id, "brand_id": bid} for bid in brand_ids]
+    supabase.table("rejections").upsert(rows, on_conflict="user_id,brand_id").execute()
+
+
+def get_user_rejection_ids(user_id: str) -> list[str]:
+    response = supabase.table("rejections").select("brand_id").eq("user_id", user_id).execute()
+    return [row["brand_id"] for row in response.data]
+
+
+def get_user_rejected_brands(user_id: str) -> list[dict]:
+    response = (
+        supabase.table("rejections")
+        .select("brands(vector)")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return [{"vector": row["brands"]["vector"]} for row in response.data]
 
 
 def get_user_ranked_brands(user_id: str) -> list[dict]:

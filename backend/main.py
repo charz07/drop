@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from routers import recommendations, users, rankings, profile
+from routers import recommendations, users, rankings, profile, rejections
 
 load_dotenv()
 
@@ -20,6 +20,7 @@ app.include_router(recommendations.router, prefix="/recommendations", tags=["rec
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(rankings.router, prefix="/rankings", tags=["rankings"])
 app.include_router(profile.router, prefix="/profile", tags=["profile"])
+app.include_router(rejections.router, prefix="/rejections", tags=["rejections"])
 
 
 @app.get("/")

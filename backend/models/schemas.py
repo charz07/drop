@@ -23,3 +23,7 @@ class RankingItem(BaseModel):
 
 class RankingsRequest(BaseModel):
     rankings: list[RankingItem]
+
+
+class RejectionsRequest(BaseModel):
+    brand_ids: list[str]

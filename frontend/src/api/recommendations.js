@@ -25,3 +25,14 @@ export async function getProfile(userId) {
   if (!res.ok) throw new Error('Failed to fetch profile')
   return res.json()
 }
+
+export async function submitRejections(brandIds, userId) {
+  if (!brandIds.length) return
+  const res = await fetch(`${API_BASE}/rejections/?user_id=${userId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ brand_ids: brandIds }),
+  })
+  if (!res.ok) throw new Error('Failed to submit rejections')
+  return res.json()
+}
