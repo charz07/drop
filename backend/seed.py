@@ -27,35 +27,18 @@ def seed(brands):
     print("Done.")
 
 
-def update_urls(brands):
-    print(f"Updating URLs for {len(brands)} brands...")
+def update_field(brands, field):
+    print(f"Updating {field} for {len(brands)} brands...")
     for brand in brands:
-        if not brand.get("url"):
+        if not brand.get(field):
             continue
-        supabase.table("brands").update({"url": brand["url"]}).eq("name", brand["name"]).execute()
-        print(f"  → {brand['name']}")
-    print("Done.")
-
-
-def update_images(brands):
-    print(f"Updating images for {len(brands)} brands...")
-    for brand in brands:
-        if not brand.get("image_url"):
-            continue
-        supabase.table("brands").update({"image_url": brand["image_url"]}).eq("name", brand["name"]).execute()
-        print(f"  → {brand['name']}")
-    print("Done.")
-
-
-def update_tags(brands):
-    print(f"Updating tags for {len(brands)} brands...")
-    for brand in brands:
-        if not brand.get("tags"):
-            continue
-        supabase.table("brands").update({"tags": brand["tags"]}).eq("name", brand["name"]).execute()
+        supabase.table("brands").update({field: brand[field]}).eq("name", brand["name"]).execute()
         print(f"  → {brand['name']}")
     print("Done.")
 
 
 if __name__ == "__main__":
-    update_tags(SEED_BRANDS + NEW_BRANDS)
+    all_brands = SEED_BRANDS + NEW_BRANDS
+    update_field(all_brands, "url")
+    update_field(all_brands, "image_url")
+    update_field(all_brands, "tags")
