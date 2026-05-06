@@ -58,7 +58,7 @@ SEED_BRANDS = [
 
 
 def fetch_brand_catalog() -> list[dict]:
-    response = supabase.table("brands").select("id, name, description, vector, url").execute()
+    response = supabase.table("brands").select("id, name, description, vector, url, image_url").execute()
     return response.data
 
 

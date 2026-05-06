@@ -11,6 +11,7 @@ class BrandOut(BaseModel):
     description: str
     match_score: float
     url: str | None = None
+    image_url: str | None = None
 
 
 class DropResponse(BaseModel):
