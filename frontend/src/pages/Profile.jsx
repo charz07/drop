@@ -32,15 +32,20 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
         brands.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
         const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t)
         return topTags.length > 0 && (
-          <div className="profile-tags">
-            {topTags.map((tag) => <span key={tag} className="brand-tag">{tag}</span>)}
-          </div>
+          <>
+            <p className="profile-section-label">Your taste tends toward</p>
+            <div className="profile-tags">
+              {topTags.map((tag) => <span key={tag} className="brand-tag">{tag}</span>)}
+            </div>
+          </>
         )
       })()}
 
       {!fetching && brands.length > 0 && (
-        <div className="profile-brand-list">
-          {brands.map((brand) => (
+        <>
+          <p className="profile-section-label">Brands you've ranked</p>
+          <div className="profile-brand-list">
+            {brands.map((brand) => (
             <div key={brand.id} className="profile-brand-card">
               <div className="profile-brand-row">
                 <span className="profile-brand-name">{brand.name}</span>
@@ -48,8 +53,9 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
               </div>
               <span className="profile-brand-desc">{brand.description}</span>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
 
       {!fetching && brands.length === 0 && (
