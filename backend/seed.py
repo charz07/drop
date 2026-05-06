@@ -10,8 +10,13 @@ supabase = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_KEY"])
 
 
 def seed(brands):
-    print(f"Embedding and inserting {len(brands)} brands...")
-    for brand in brands:
+    existing = {r["name"] for r in supabase.table("brands").select("name").execute().data}
+    to_insert = [b for b in brands if b["name"] not in existing]
+    if not to_insert:
+        print("All brands already seeded.")
+        return
+    print(f"Embedding and inserting {len(to_insert)} brands...")
+    for brand in to_insert:
         print(f"  → {brand['name']}")
         vector = embed_text(brand["description"])
         supabase.table("brands").insert({
