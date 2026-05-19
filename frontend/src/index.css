@@ -191,8 +191,8 @@ body {
 }
 
 .brand-image-wrap {
-  width: 140px;
-  min-width: 140px;
+  width: 180px;
+  min-width: 180px;
   flex-shrink: 0;
   background: #222;
 }
