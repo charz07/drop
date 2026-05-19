@@ -99,8 +99,7 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
     if (step < QUESTIONS.length - 1) {
       setStep(step + 1)
     } else {
-      setText(synthesize(answers))
-      setMode('text')
+      onSubmit(synthesize(answers))
     }
   }
 
@@ -158,7 +157,7 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
             onClick={handleNext}
             disabled={!canAdvance}
           >
-            {step < QUESTIONS.length - 1 ? 'Next →' : 'See my taste profile →'}
+            {step < QUESTIONS.length - 1 ? 'Next →' : 'Get my drop →'}
           </button>
           <button type="button" className="profile-link" onClick={() => setMode('text')}>
             Skip quiz
