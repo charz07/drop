@@ -131,6 +131,11 @@ body {
   transition: border-color 0.2s;
 }
 
+.quiz-textarea {
+  margin-bottom: 1.5rem;
+  font-family: inherit;
+}
+
 .taste-textarea:focus {
   border-color: #555;
 }

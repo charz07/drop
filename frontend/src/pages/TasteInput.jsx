@@ -29,6 +29,12 @@ const QUESTIONS = [
     options: ['Clean & simple', 'Functional & healthy', 'Adventurous & global', 'Indulgent & rich', 'Fermented & complex'],
     multi: true,
   },
+  {
+    id: 'recent',
+    type: 'text',
+    question: "What's something delicious you ate or drank recently? What are your go-to brands or products?",
+    placeholder: 'e.g. Had amazing Fly By Jing chili crisp lately, love Olipop and anything fermented...',
+  },
 ]
 
 function synthesize(answers) {
@@ -61,6 +67,10 @@ function synthesize(answers) {
   if (answers.vibe?.length) {
     const vibes = answers.vibe.map((v) => v.toLowerCase())
     parts.push(`My food philosophy leans ${vibes.join(', ')}`)
+  }
+
+  if (answers.recent?.trim()) {
+    parts.push(answers.recent.trim())
   }
 
   return parts.join('. ') + '.'
@@ -101,7 +111,7 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
 
   const q = QUESTIONS[step]
   const currentAnswer = answers[q?.id]
-  const canAdvance = q?.multi ? (currentAnswer?.length > 0) : !!currentAnswer
+  const canAdvance = q?.type === 'text' ? true : q?.multi ? (currentAnswer?.length > 0) : !!currentAnswer
 
   if (mode === 'quiz') {
     return (
@@ -113,23 +123,33 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
           ))}
         </div>
         <p className="quiz-question">{q.question}</p>
-        <div className="quiz-options">
-          {q.options.map((opt) => {
-            const selected = q.multi
-              ? (currentAnswer || []).includes(opt)
-              : currentAnswer === opt
-            return (
-              <button
-                key={opt}
-                type="button"
-                className={`quiz-option ${selected ? 'selected' : ''}`}
-                onClick={() => handleOption(q.id, opt, q.multi)}
-              >
-                {opt}
-              </button>
-            )
-          })}
-        </div>
+        {q.type === 'text' ? (
+          <textarea
+            className="taste-textarea quiz-textarea"
+            placeholder={q.placeholder}
+            value={currentAnswer || ''}
+            onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
+            rows={4}
+          />
+        ) : (
+          <div className="quiz-options">
+            {q.options.map((opt) => {
+              const selected = q.multi
+                ? (currentAnswer || []).includes(opt)
+                : currentAnswer === opt
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  className={`quiz-option ${selected ? 'selected' : ''}`}
+                  onClick={() => handleOption(q.id, opt, q.multi)}
+                >
+                  {opt}
+                </button>
+              )
+            })}
+          </div>
+        )}
         <div className="quiz-footer">
           <button
             type="button"
@@ -150,11 +170,11 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
   return (
     <div className="page taste-input-page">
       <h1 className="app-title">Drop</h1>
-      <p className="app-subtitle">Describe your taste. Get matched to brands you'll love.</p>
+      <p className="app-subtitle">Get matched to brands you'll love.</p>
       <form onSubmit={handleSubmit} className="taste-form">
         <textarea
           className="taste-textarea"
-          placeholder="e.g. I love bold, spicy flavors with a hint of sweetness and fermented complexity..."
+          placeholder="What's something delicious you ate or drank recently? What are your go-to brands or products?"
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={5}
