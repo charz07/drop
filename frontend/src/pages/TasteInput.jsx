@@ -123,6 +123,7 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
           ))}
         </div>
         <p className="quiz-question">{q.question}</p>
+        {q.multi && <p className="quiz-multiselect-hint">Select all that apply</p>}
         {q.type === 'text' ? (
           <textarea
             className="taste-textarea quiz-textarea"
@@ -144,7 +145,7 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
                   className={`quiz-option ${selected ? 'selected' : ''}`}
                   onClick={() => handleOption(q.id, opt, q.multi)}
                 >
-                  {opt}
+                  {q.multi && selected && <span className="quiz-check">✓ </span>}{opt}
                 </button>
               )
             })}
