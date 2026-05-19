@@ -180,8 +180,10 @@ body {
   background: #1a1a1a;
   border: 1px solid #2e2e2e;
   border-radius: 12px;
-  padding: 1.25rem;
+  overflow: hidden;
   transition: border-color 0.2s;
+  display: flex;
+  flex-direction: row;
 }
 
 .brand-card.ranked {
@@ -189,11 +191,9 @@ body {
 }
 
 .brand-image-wrap {
-  width: 100%;
-  height: 180px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 1rem;
+  width: 140px;
+  min-width: 140px;
+  flex-shrink: 0;
   background: #222;
 }
 
@@ -201,6 +201,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .brand-image-placeholder {
@@ -212,6 +213,14 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   color: #333;
+}
+
+.brand-card-body {
+  flex: 1;
+  min-width: 0;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .brand-card-header {
