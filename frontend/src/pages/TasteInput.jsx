@@ -34,7 +34,6 @@ const QUESTIONS = [
     type: 'text',
     question: "Anything you've been into lately?",
     placeholder: 'e.g. Fly By Jing chili crisp, Olipop, anything fermented…',
-    optional: true,
   },
 ]
 
@@ -85,6 +84,22 @@ export default function TasteInput({ onSubmit, loading }) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
 
+  const q = QUESTIONS[step]
+  const currentAnswer = answers[q?.id]
+  const isLastStep = step === QUESTIONS.length - 1
+
+  const hasAnswer = q?.type === 'text'
+    ? !!currentAnswer?.trim()
+    : q?.multi
+      ? (currentAnswer?.length > 0)
+      : !!currentAnswer
+
+  function getButtonLabel() {
+    if (loading) return 'Finding your drop…'
+    if (isLastStep) return hasAnswer ? 'Get my drop →' : 'Skip →'
+    return hasAnswer ? 'Next →' : 'Skip →'
+  }
+
   function handleOption(questionId, option, multi) {
     setAnswers((prev) => {
       if (multi) {
@@ -118,11 +133,6 @@ export default function TasteInput({ onSubmit, loading }) {
     onSubmit(SURPRISE_DESCRIPTION)
   }
 
-  const q = QUESTIONS[step]
-  const currentAnswer = answers[q?.id]
-  const isLastStep = step === QUESTIONS.length - 1
-  const hasTextInput = q?.type === 'text' && currentAnswer?.trim()
-
   if (mode === 'splash') {
     return (
       <div className="page taste-input-page splash-page">
@@ -147,7 +157,6 @@ export default function TasteInput({ onSubmit, loading }) {
         ))}
       </div>
       <p className="quiz-question">{q.question}</p>
-      {q.optional && <p className="quiz-multiselect-hint">Optional — press Next to skip</p>}
       {q.multi && <p className="quiz-multiselect-hint">Select all that apply</p>}
       {q.type === 'text' ? (
         <textarea
@@ -183,15 +192,17 @@ export default function TasteInput({ onSubmit, loading }) {
           onClick={handleNext}
           disabled={loading}
         >
-          {loading ? 'Finding your drop…' : isLastStep ? (hasTextInput ? 'Get my drop →' : 'Skip →') : 'Next →'}
+          {getButtonLabel()}
         </button>
         <div className="quiz-footer-row">
           <button type="button" className="quiz-back-btn" onClick={handleBack} disabled={loading}>
             ← Back
           </button>
-          <button type="button" className="quiz-surprise-btn" onClick={handleSurprise} disabled={loading}>
-            Surprise me →
-          </button>
+          {step === 0 && (
+            <button type="button" className="quiz-surprise-btn" onClick={handleSurprise} disabled={loading}>
+              Surprise me →
+            </button>
+          )}
         </div>
       </div>
     </div>
