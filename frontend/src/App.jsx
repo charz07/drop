@@ -56,6 +56,10 @@ export default function App() {
   }
 
   function handleRankingsSubmitted() {
+    fetchDrop(getSavedTaste())
+  }
+
+  function handleViewProfile() {
     setScreen('profile')
   }
 
@@ -97,6 +101,7 @@ export default function App() {
           brands={brands}
           userId={userId}
           onRankingsSubmitted={handleRankingsSubmitted}
+          onViewProfile={handleViewProfile}
         />
       )}
       {screen === 'profile' && (

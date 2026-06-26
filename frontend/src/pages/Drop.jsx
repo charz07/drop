@@ -2,7 +2,7 @@ import { useState } from 'react'
 import BrandCard from '../components/BrandCard'
 import { submitRankings, submitRejections, trackClick } from '../api/recommendations'
 
-export default function Drop({ brands, userId, onRankingsSubmitted }) {
+export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfile }) {
   const [reactions, setReactions] = useState({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -30,7 +30,7 @@ export default function Drop({ brands, userId, onRankingsSubmitted }) {
     <div className="page drop-page">
       <div className="drop-header">
         <h2>Your Drop</h2>
-        <p className="drop-subtitle">React to each brand to improve your next drop.</p>
+        <p className="drop-subtitle">Like what appeals to you. Skip what doesn't.</p>
       </div>
       <div className="brand-grid">
         {brands.map((brand) => (
@@ -50,6 +50,9 @@ export default function Drop({ brands, userId, onRankingsSubmitted }) {
           disabled={submitting}
         >
           {submitting ? 'Saving…' : 'Get next drop →'}
+        </button>
+        <button type="button" className="profile-link" onClick={onViewProfile}>
+          View your taste profile
         </button>
       </div>
     </div>

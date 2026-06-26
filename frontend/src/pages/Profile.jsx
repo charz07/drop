@@ -20,7 +20,7 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
     <div className="page profile-page">
       <div className="profile-header">
         <h2>Your Taste Profile</h2>
-        <p className="drop-subtitle">Built from everything you've ranked.</p>
+        <p className="drop-subtitle">Built from everything you've reacted to.</p>
       </div>
 
       {fetching && <p className="muted">Loading…</p>}
@@ -43,33 +43,33 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
         )
       })()}
 
-      {!fetching && brands.length > 0 && (
-        <>
-          <p className="profile-section-label">Brands you've ranked</p>
-          <div className="profile-brand-list">
-            {brands.map((brand) => (
-            <div key={brand.id} className="profile-brand-card">
-              <div className="profile-brand-row">
-                <span className="profile-brand-name">{brand.name}</span>
-                <span className="profile-rank-badge">{brand.rank}</span>
-              </div>
-              <span className="profile-brand-desc">{brand.description}</span>
+      {!fetching && (() => {
+        const liked = brands.filter((b) => b.rank === 1)
+        return liked.length > 0 ? (
+          <>
+            <p className="profile-section-label">Brands you liked</p>
+            <div className="profile-brand-list">
+              {liked.map((brand) => (
+                <div key={brand.id} className="profile-brand-card">
+                  <div className="profile-brand-row">
+                    <span className="profile-brand-name">{brand.name}</span>
+                  </div>
+                  <span className="profile-brand-desc">{brand.description}</span>
+                </div>
+              ))}
             </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {!fetching && brands.length === 0 && (
-        <p className="muted">No rankings yet.</p>
-      )}
+          </>
+        ) : (
+          <p className="muted">Like some brands to build your profile.</p>
+        )
+      })()}
 
       <div className="drop-actions" style={{ marginTop: '2rem' }}>
         <button type="button" className="submit-btn" onClick={onNextDrop} disabled={loading}>
           {loading ? 'Finding your drop…' : 'Get next drop →'}
         </button>
         <button type="button" className="profile-link" onClick={onUpdateTaste}>
-          Update taste description
+          Retake taste quiz
         </button>
       </div>
     </div>
