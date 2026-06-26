@@ -198,11 +198,6 @@ export default function TasteInput({ onSubmit, loading }) {
           <button type="button" className="quiz-back-btn" onClick={handleBack} disabled={loading}>
             ← Back
           </button>
-          {step === 0 && (
-            <button type="button" className="quiz-surprise-btn" onClick={handleSurprise} disabled={loading}>
-              Surprise me →
-            </button>
-          )}
         </div>
       </div>
     </div>
