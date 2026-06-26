@@ -77,7 +77,7 @@ function synthesize(answers) {
 }
 
 export default function TasteInput({ onSubmit, loading, savedTaste }) {
-  const [mode, setMode] = useState(savedTaste ? 'text' : 'quiz')
+  const [mode, setMode] = useState(savedTaste ? 'text' : 'splash')
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [text, setText] = useState(savedTaste || '')
@@ -111,6 +111,18 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
   const q = QUESTIONS[step]
   const currentAnswer = answers[q?.id]
   const canAdvance = q?.type === 'text' ? true : q?.multi ? (currentAnswer?.length > 0) : !!currentAnswer
+
+  if (mode === 'splash') {
+    return (
+      <div className="page taste-input-page splash-page">
+        <h1 className="app-title">Drop</h1>
+        <p className="splash-tagline">Discover emerging food and drink brands matched to your taste.</p>
+        <button type="button" className="submit-btn" onClick={() => setMode('quiz')}>
+          Find my brands →
+        </button>
+      </div>
+    )
+  }
 
   if (mode === 'quiz') {
     return (
