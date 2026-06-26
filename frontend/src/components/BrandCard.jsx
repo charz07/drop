@@ -1,4 +1,4 @@
-export default function BrandCard({ brand, reaction, onReact }) {
+export default function BrandCard({ brand, reaction, onReact, onVisit }) {
   return (
     <div className={`brand-card ${reaction ? 'reacted' : ''}`}>
       <div className="brand-image-wrap">
@@ -11,7 +11,7 @@ export default function BrandCard({ brand, reaction, onReact }) {
         <div className="brand-card-header">
           <h3>{brand.name}</h3>
           {brand.url && (
-            <a href={brand.url} target="_blank" rel="noopener noreferrer" className="brand-link">
+            <a href={brand.url} target="_blank" rel="noopener noreferrer" className="brand-link" onClick={onVisit}>
               Visit →
             </a>
           )}

@@ -5,7 +5,7 @@ from slowapi.errors import RateLimitExceeded
 from dotenv import load_dotenv
 
 from limiter import limiter
-from routers import recommendations, users, rankings, profile, rejections
+from routers import recommendations, users, rankings, profile, rejections, analytics
 
 load_dotenv()
 
@@ -26,6 +26,7 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(rankings.router, prefix="/rankings", tags=["rankings"])
 app.include_router(profile.router, prefix="/profile", tags=["profile"])
 app.include_router(rejections.router, prefix="/rejections", tags=["rejections"])
+app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 
 
 @app.get("/")

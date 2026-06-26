@@ -81,6 +81,10 @@ def get_drop_history(user_id: str) -> list[str]:
     return [row["brand_id"] for row in response.data]
 
 
+def record_click(user_id: str, brand_id: str):
+    supabase.table("clicks").insert({"user_id": user_id, "brand_id": brand_id}).execute()
+
+
 def reset_drop_history(user_id: str):
     supabase.table("drop_history").delete().eq("user_id", user_id).execute()
 

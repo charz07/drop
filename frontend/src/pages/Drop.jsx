@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import BrandCard from '../components/BrandCard'
-import { submitRankings, submitRejections } from '../api/recommendations'
+import { submitRankings, submitRejections, trackClick } from '../api/recommendations'
 
 export default function Drop({ brands, userId, onRankingsSubmitted }) {
   const [reactions, setReactions] = useState({})
@@ -39,6 +39,7 @@ export default function Drop({ brands, userId, onRankingsSubmitted }) {
             brand={brand}
             reaction={reactions[brand.id] || null}
             onReact={handleReact}
+            onVisit={() => trackClick(brand.id, userId)}
           />
         ))}
       </div>

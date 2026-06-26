@@ -37,3 +37,8 @@ export async function submitRejections(brandIds, userId) {
   if (!res.ok) throw new Error('Failed to submit rejections')
   return res.json()
 }
+
+export function trackClick(brandId, userId) {
+  fetch(`${API_BASE}/analytics/click?user_id=${userId}&brand_id=${brandId}`, { method: 'POST' })
+    .catch(() => {})
+}
