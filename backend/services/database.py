@@ -81,6 +81,10 @@ def get_drop_history(user_id: str) -> list[str]:
     return [row["brand_id"] for row in response.data]
 
 
+def reset_drop_history(user_id: str):
+    supabase.table("drop_history").delete().eq("user_id", user_id).execute()
+
+
 def save_drop_history(user_id: str, brand_ids: list[str]):
     rows = [{"user_id": user_id, "brand_id": bid} for bid in brand_ids]
     supabase.table("drop_history").insert(rows).execute()

@@ -6,6 +6,7 @@ export async function getRecommendations(tasteDescription, userId) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ taste_description: tasteDescription }),
   })
+  if (res.status === 409) throw new Error('catalog_exhausted')
   if (!res.ok) throw new Error('Failed to get recommendations')
   return res.json()
 }

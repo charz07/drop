@@ -8,11 +8,14 @@ client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 
 def embed_text(text: str) -> list[float]:
-    result = client.models.embed_content(
-        model="gemini-embedding-001",
-        contents=text,
-    )
-    return result.embeddings[0].values
+    try:
+        result = client.models.embed_content(
+            model="gemini-embedding-001",
+            contents=text,
+        )
+        return result.embeddings[0].values
+    except Exception as e:
+        raise RuntimeError(f"Embedding service unavailable: {e}")
 
 
 def embed_brand_catalog(brands: list[dict]) -> list[dict]:

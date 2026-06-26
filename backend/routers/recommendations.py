@@ -17,7 +17,10 @@ async def get_recommendations(request: Request, body: TasteProfileRequest, user_
     if not brand_catalog:
         raise HTTPException(status_code=503, detail="Brand catalog not available")
 
-    user_vector = embed_text(body.taste_description)
+    try:
+        user_vector = embed_text(body.taste_description)
+    except RuntimeError:
+        raise HTTPException(status_code=503, detail="Recommendation service temporarily unavailable")
 
     ranked_brands = get_user_ranked_brands(user_id)
     rejected_brands = get_user_rejected_brands(user_id)
@@ -29,6 +32,9 @@ async def get_recommendations(request: Request, body: TasteProfileRequest, user_
     already_received = get_drop_history(user_id)
     rejected_ids = get_user_rejection_ids(user_id)
     drop = generate_drop(user_vector, brand_catalog, already_received, rejected_ids, ranked_brands=ranked_brands)
-    save_drop_history(user_id, [brand["id"] for brand in drop])
 
+    if not drop:
+        raise HTTPException(status_code=409, detail="catalog_exhausted")
+
+    save_drop_history(user_id, [brand["id"] for brand in drop])
     return DropResponse(drop=[BrandOut(**brand) for brand in drop])

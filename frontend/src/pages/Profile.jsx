@@ -7,11 +7,13 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
   const [fetching, setFetching] = useState(true)
 
   useEffect(() => {
-    getProfile(userId).then((data) => {
-      setBrands(data.brands)
-      setSummary(data.summary)
-      setFetching(false)
-    })
+    getProfile(userId)
+      .then((data) => {
+        setBrands(data.brands)
+        setSummary(data.summary)
+      })
+      .catch(() => {})
+      .finally(() => setFetching(false))
   }, [userId])
 
   return (
