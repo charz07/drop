@@ -108,7 +108,6 @@ export default function App() {
         <TasteInput
           onSubmit={handleSubmit}
           loading={loading}
-          startInQuiz={!!savedTaste}
         />
       )}
 

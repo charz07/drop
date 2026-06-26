@@ -86,7 +86,7 @@ body {
 
 .quiz-multiselect-hint {
   font-size: 0.8rem;
-  color: #555;
+  color: #888;
   text-align: center;
   margin-bottom: 1.25rem;
 }
@@ -132,6 +132,50 @@ body {
   align-items: center;
   gap: 0.75rem;
   width: 100%;
+}
+
+.quiz-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.quiz-back-btn {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.quiz-back-btn:hover:not(:disabled) {
+  color: #999;
+}
+
+.quiz-back-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.quiz-surprise-btn {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.quiz-surprise-btn:hover:not(:disabled) {
+  color: #999;
+}
+
+.quiz-surprise-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .taste-form {

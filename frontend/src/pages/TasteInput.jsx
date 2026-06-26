@@ -32,10 +32,13 @@ const QUESTIONS = [
   {
     id: 'recent',
     type: 'text',
-    question: "What's something delicious you ate or drank recently? What are your go-to brands or products?",
-    placeholder: 'e.g. Had amazing Fly By Jing chili crisp lately, love Olipop and anything fermented...',
+    question: "Anything you've been into lately?",
+    placeholder: 'e.g. Fly By Jing chili crisp, Olipop, anything fermented…',
+    optional: true,
   },
 ]
+
+const SURPRISE_DESCRIPTION = "I'm open to everything — adventurous and curious, no strong preferences. Surprise me with something interesting."
 
 function synthesize(answers) {
   const parts = []
@@ -73,14 +76,14 @@ function synthesize(answers) {
     parts.push(answers.recent.trim())
   }
 
-  return parts.join('. ') + '.'
+  const result = parts.join('. ')
+  return result ? result + '.' : SURPRISE_DESCRIPTION
 }
 
-export default function TasteInput({ onSubmit, loading, savedTaste }) {
-  const [mode, setMode] = useState(savedTaste ? 'text' : 'splash')
+export default function TasteInput({ onSubmit, loading }) {
+  const [mode, setMode] = useState('splash')
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
-  const [text, setText] = useState(savedTaste || '')
 
   function handleOption(questionId, option, multi) {
     setAnswers((prev) => {
@@ -103,78 +106,34 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
     }
   }
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (text.trim()) onSubmit(text.trim())
+  function handleBack() {
+    if (step > 0) {
+      setStep(step - 1)
+    } else {
+      setMode('splash')
+    }
+  }
+
+  function handleSurprise() {
+    onSubmit(SURPRISE_DESCRIPTION)
   }
 
   const q = QUESTIONS[step]
   const currentAnswer = answers[q?.id]
-  const canAdvance = q?.type === 'text' ? true : q?.multi ? (currentAnswer?.length > 0) : !!currentAnswer
+  const isLastStep = step === QUESTIONS.length - 1
+  const hasTextInput = q?.type === 'text' && currentAnswer?.trim()
 
   if (mode === 'splash') {
     return (
       <div className="page taste-input-page splash-page">
         <h1 className="app-title">Drop</h1>
         <p className="splash-tagline">Discover emerging food and drink brands matched to your taste.</p>
-        <button type="button" className="submit-btn" onClick={() => setMode('quiz')}>
+        <button type="button" className="submit-btn" onClick={() => setMode('quiz')} disabled={loading}>
           Find my brands →
         </button>
-      </div>
-    )
-  }
-
-  if (mode === 'quiz') {
-    return (
-      <div className="page taste-input-page">
-        <h1 className="app-title">Drop</h1>
-        <div className="quiz-progress">
-          {QUESTIONS.map((_, i) => (
-            <div key={i} className={`quiz-pip ${i <= step ? 'active' : ''}`} />
-          ))}
-        </div>
-        <p className="quiz-question">{q.question}</p>
-        {q.multi && <p className="quiz-multiselect-hint">Select all that apply</p>}
-        {q.type === 'text' ? (
-          <textarea
-            className="taste-textarea quiz-textarea"
-            placeholder={q.placeholder}
-            value={currentAnswer || ''}
-            onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
-            rows={4}
-          />
-        ) : (
-          <div className="quiz-options">
-            {q.options.map((opt) => {
-              const selected = q.multi
-                ? (currentAnswer || []).includes(opt)
-                : currentAnswer === opt
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  className={`quiz-option ${selected ? 'selected' : ''}`}
-                  onClick={() => handleOption(q.id, opt, q.multi)}
-                >
-                  {q.multi && selected && <span className="quiz-check">✓ </span>}{opt}
-                </button>
-              )
-            })}
-          </div>
-        )}
-        <div className="quiz-footer">
-          <button
-            type="button"
-            className="submit-btn"
-            onClick={handleNext}
-            disabled={!canAdvance}
-          >
-            {step < QUESTIONS.length - 1 ? 'Next →' : 'Get my drop →'}
-          </button>
-          <button type="button" className="profile-link" onClick={() => setMode('text')}>
-            Skip quiz
-          </button>
-        </div>
+        <button type="button" className="profile-link" onClick={handleSurprise} disabled={loading}>
+          Surprise me →
+        </button>
       </div>
     )
   }
@@ -182,23 +141,59 @@ export default function TasteInput({ onSubmit, loading, savedTaste }) {
   return (
     <div className="page taste-input-page">
       <h1 className="app-title">Drop</h1>
-      <p className="app-subtitle">Get matched to brands you'll love.</p>
-      <form onSubmit={handleSubmit} className="taste-form">
+      <div className="quiz-progress">
+        {QUESTIONS.map((_, i) => (
+          <div key={i} className={`quiz-pip ${i <= step ? 'active' : ''}`} />
+        ))}
+      </div>
+      <p className="quiz-question">{q.question}</p>
+      {q.optional && <p className="quiz-multiselect-hint">Optional — press Next to skip</p>}
+      {q.multi && <p className="quiz-multiselect-hint">Select all that apply</p>}
+      {q.type === 'text' ? (
         <textarea
-          className="taste-textarea"
-          placeholder="What's something delicious you ate or drank recently? What are your go-to brands or products?"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={5}
-          disabled={loading}
+          className="taste-textarea quiz-textarea"
+          placeholder={q.placeholder}
+          value={currentAnswer || ''}
+          onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
+          rows={4}
         />
-        <button type="submit" className="submit-btn" disabled={loading || !text.trim()}>
-          {loading ? 'Finding your drop…' : 'Get my drop →'}
+      ) : (
+        <div className="quiz-options">
+          {q.options.map((opt) => {
+            const selected = q.multi
+              ? (currentAnswer || []).includes(opt)
+              : currentAnswer === opt
+            return (
+              <button
+                key={opt}
+                type="button"
+                className={`quiz-option ${selected ? 'selected' : ''}`}
+                onClick={() => handleOption(q.id, opt, q.multi)}
+              >
+                {q.multi && selected && <span className="quiz-check">✓ </span>}{opt}
+              </button>
+            )
+          })}
+        </div>
+      )}
+      <div className="quiz-footer">
+        <button
+          type="button"
+          className="submit-btn"
+          onClick={handleNext}
+          disabled={loading}
+        >
+          {loading ? 'Finding your drop…' : isLastStep ? (hasTextInput ? 'Get my drop →' : 'Skip →') : 'Next →'}
         </button>
-      </form>
-      <button type="button" className="profile-link" style={{ marginTop: '1rem' }} onClick={() => { setStep(0); setAnswers({}); setMode('quiz') }}>
-        Retake quiz
-      </button>
+        <div className="quiz-footer-row">
+          <button type="button" className="quiz-back-btn" onClick={handleBack} disabled={loading}>
+            ← Back
+          </button>
+          <button type="button" className="quiz-surprise-btn" onClick={handleSurprise} disabled={loading}>
+            Surprise me →
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
