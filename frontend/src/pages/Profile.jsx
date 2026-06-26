@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getProfile } from '../api/recommendations'
 
-export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) {
+export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDrop, hasDrop, loading }) {
   const [brands, setBrands] = useState([])
   const [summary, setSummary] = useState(null)
   const [fetching, setFetching] = useState(true)
@@ -29,9 +29,10 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
         <p className="taste-summary">{summary}</p>
       )}
 
-      {!fetching && brands.length > 0 && (() => {
+      {!fetching && (() => {
+        const liked = brands.filter((b) => b.rank === 1)
         const tagCounts = {}
-        brands.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
+        liked.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
         const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t)
         return topTags.length > 0 && (
           <>
@@ -65,6 +66,11 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, loading }) 
       })()}
 
       <div className="drop-actions" style={{ marginTop: '2rem' }}>
+        {hasDrop && (
+          <button type="button" className="submit-btn" onClick={onBackToDrop}>
+            ← Back to drop
+          </button>
+        )}
         <button type="button" className="submit-btn" onClick={onNextDrop} disabled={loading}>
           {loading ? 'Finding your drop…' : 'Get next drop →'}
         </button>

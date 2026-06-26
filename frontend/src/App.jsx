@@ -125,6 +125,8 @@ export default function App() {
           userId={userId}
           onNextDrop={handleNextDrop}
           onUpdateTaste={handleRetakeQuiz}
+          onBackToDrop={() => setScreen('drop')}
+          hasDrop={brands.length > 0}
           loading={loading}
         />
       )}
