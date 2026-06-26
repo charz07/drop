@@ -57,9 +57,14 @@ SEED_BRANDS = [
 ]
 
 
+_brand_catalog_cache: list[dict] = []
+
 def fetch_brand_catalog() -> list[dict]:
-    response = supabase.table("brands").select("id, name, description, vector, url, image_url, tags").execute()
-    return response.data
+    global _brand_catalog_cache
+    if not _brand_catalog_cache:
+        response = supabase.table("brands").select("id, name, description, vector, url, image_url, tags").execute()
+        _brand_catalog_cache = response.data
+    return _brand_catalog_cache
 
 
 def ensure_user_exists(user_id: str):
