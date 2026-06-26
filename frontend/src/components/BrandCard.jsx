@@ -26,7 +26,7 @@ export default function BrandCard({ brand, reaction, onReact }) {
         <p className="brand-description">{brand.description}</p>
         <div className="reaction-buttons">
           {[
-            { key: 'want', label: 'Want to try' },
+            { key: 'want', label: 'Like' },
             { key: 'maybe', label: 'Maybe' },
             { key: 'no', label: 'Not for me' },
           ].map(({ key, label }) => (
