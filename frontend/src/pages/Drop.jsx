@@ -5,6 +5,7 @@ import { submitRankings, submitRejections, trackClick } from '../api/recommendat
 export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfile }) {
   const [reactions, setReactions] = useState({})
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState(null)
 
   function handleReact(brandId, reaction) {
     setReactions((prev) => ({ ...prev, [brandId]: reaction }))
@@ -12,6 +13,7 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
 
   async function handleNextDrop() {
     setSubmitting(true)
+    setError(null)
     const rankPayload = brands
       .filter((b) => reactions[b.id] === 'want' || reactions[b.id] === 'maybe')
       .map((b) => ({ brand_id: b.id, rank: reactions[b.id] === 'want' ? 1 : 2 }))
@@ -19,18 +21,23 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
       .filter((b) => reactions[b.id] === 'no')
       .map((b) => b.id)
 
-    await Promise.all([
-      rankPayload.length ? submitRankings(rankPayload, userId) : Promise.resolve(),
-      rejectPayload.length ? submitRejections(rejectPayload, userId) : Promise.resolve(),
-    ])
-    onRankingsSubmitted()
+    try {
+      await Promise.all([
+        rankPayload.length ? submitRankings(rankPayload, userId) : Promise.resolve(),
+        rejectPayload.length ? submitRejections(rejectPayload, userId) : Promise.resolve(),
+      ])
+      onRankingsSubmitted()
+    } catch {
+      setError('Failed to save reactions. Try again.')
+      setSubmitting(false)
+    }
   }
 
   return (
     <div className="page drop-page">
       <div className="drop-header">
         <h2>Your Drop</h2>
-        <p className="drop-subtitle">Like what appeals to you. Skip what doesn't.</p>
+        <p className="drop-subtitle">React to what you see — your picks save when you continue.</p>
       </div>
       <div className="brand-grid">
         {brands.map((brand) => (
@@ -44,6 +51,7 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
         ))}
       </div>
       <div className="drop-actions">
+        {error && <p className="drop-error">{error}</p>}
         <button
           className="submit-btn"
           onClick={handleNextDrop}

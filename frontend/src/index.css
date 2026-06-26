@@ -258,13 +258,10 @@ body {
   flex-direction: row;
 }
 
-.brand-card.ranked {
-  border-color: #444;
-}
-
 .brand-image-wrap {
   width: 220px;
   min-width: 220px;
+  min-height: 200px;
   flex-shrink: 0;
   background: #222;
 }
@@ -390,6 +387,11 @@ body {
   background: #2e2e2e;
   border-color: #555;
   color: #888;
+}
+
+.drop-error {
+  font-size: 0.85rem;
+  color: #ff8080;
 }
 
 .drop-actions {
