@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TasteInput from './pages/TasteInput'
 import Drop from './pages/Drop'
 import Profile from './pages/Profile'
@@ -25,11 +25,15 @@ export default function App() {
   const userId = getUserId()
   const savedTaste = getSavedTaste()
 
-  const [screen, setScreen] = useState(savedTaste ? 'input' : 'input')
+  const [screen, setScreen] = useState(savedTaste ? 'fetching' : 'input')
   const [brands, setBrands] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [exhausted, setExhausted] = useState(false)
+
+  useEffect(() => {
+    if (savedTaste) fetchDrop(savedTaste)
+  }, [])
 
   async function fetchDrop(tasteDescription) {
     setLoading(true)
@@ -42,8 +46,10 @@ export default function App() {
     } catch (err) {
       if (err.message === 'catalog_exhausted') {
         setExhausted(true)
+        setScreen('exhausted')
       } else {
         setError('Something went wrong. Make sure the backend is running.')
+        setScreen(savedTaste ? 'drop' : 'input')
       }
     } finally {
       setLoading(false)
@@ -67,7 +73,7 @@ export default function App() {
     fetchDrop(getSavedTaste())
   }
 
-  function handleUpdateTaste() {
+  function handleRetakeQuiz() {
     setScreen('input')
   }
 
@@ -80,7 +86,15 @@ export default function App() {
   return (
     <div className="app">
       {error && <div className="error-banner">{error}</div>}
-      {exhausted && (
+
+      {screen === 'fetching' && (
+        <div className="page taste-input-page">
+          <h1 className="app-title">Drop</h1>
+          <p className="muted">Finding your drop…</p>
+        </div>
+      )}
+
+      {screen === 'exhausted' && (
         <div className="page taste-input-page">
           <h1 className="app-title">Drop</h1>
           <p className="splash-tagline">You've seen every brand in the catalog. Reset your history to start fresh.</p>
@@ -89,13 +103,15 @@ export default function App() {
           </button>
         </div>
       )}
+
       {screen === 'input' && (
         <TasteInput
           onSubmit={handleSubmit}
           loading={loading}
-          savedTaste={savedTaste}
+          startInQuiz={!!savedTaste}
         />
       )}
+
       {screen === 'drop' && (
         <Drop
           brands={brands}
@@ -104,11 +120,12 @@ export default function App() {
           onViewProfile={handleViewProfile}
         />
       )}
+
       {screen === 'profile' && (
         <Profile
           userId={userId}
           onNextDrop={handleNextDrop}
-          onUpdateTaste={handleUpdateTaste}
+          onUpdateTaste={handleRetakeQuiz}
           loading={loading}
         />
       )}
