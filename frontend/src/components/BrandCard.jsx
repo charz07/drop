@@ -16,7 +16,6 @@ export default function BrandCard({ brand, rank, onRank, rejected, onReject }) {
                 Visit →
               </a>
             )}
-            <span className="match-score">{Math.round(brand.match_score * 100)}% match</span>
           </div>
         </div>
         {brand.tags?.length > 0 && (
