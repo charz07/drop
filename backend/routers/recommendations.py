@@ -3,7 +3,7 @@ from models.schemas import TasteProfileRequest, DropResponse, BrandOut
 from services.embeddings import embed_text
 from services.matching import generate_drop, build_preference_vector, blend_vectors
 from services.database import fetch_brand_catalog, get_drop_history, save_drop_history, ensure_user_exists, get_user_ranked_brands, get_user_rejected_brands, get_user_rejection_ids
-from main import limiter
+from limiter import limiter
 
 router = APIRouter()
 
