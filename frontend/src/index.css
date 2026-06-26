@@ -308,40 +308,44 @@ body {
   overflow: hidden;
 }
 
-.rank-buttons {
+.reaction-buttons {
   display: flex;
-  align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.rank-label {
-  font-size: 0.8rem;
-  color: #666;
-  margin-right: 0.25rem;
-}
-
-.rank-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #333;
+.reaction-btn {
   background: transparent;
-  color: #888;
-  font-size: 0.85rem;
+  border: 1px solid #2e2e2e;
+  color: #666;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.rank-btn:hover {
-  border-color: #888;
+.reaction-btn:hover {
+  border-color: #555;
   color: #f0f0f0;
 }
 
-.rank-btn.active {
-  background: #f0f0f0;
-  color: #0f0f0f;
-  border-color: #f0f0f0;
-  font-weight: 700;
+.reaction-btn--want.active {
+  background: #1a3a1a;
+  border-color: #4a9e4a;
+  color: #6bcf7f;
+}
+
+.reaction-btn--maybe.active {
+  background: #2a2a1a;
+  border-color: #8a7a2a;
+  color: #c8b44a;
+}
+
+.reaction-btn--no.active {
+  background: #2e2e2e;
+  border-color: #555;
+  color: #888;
 }
 
 .drop-actions {
@@ -350,72 +354,6 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
-}
-
-.ranked-msg {
-  font-size: 0.9rem;
-  color: #6bcf7f;
-}
-
-.restart-btn {
-  background: transparent;
-  border: 1px solid #333;
-  color: #888;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.restart-btn:hover {
-  border-color: #666;
-  color: #f0f0f0;
-}
-
-.reject-btn {
-  margin-left: auto;
-  background: transparent;
-  border: 1px solid #333;
-  color: #555;
-  border-radius: 6px;
-  padding: 0.25rem 0.6rem;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.reject-btn:hover {
-  border-color: #666;
-  color: #aaa;
-}
-
-.brand-card.rejected {
-  opacity: 0.45;
-  border-color: #222;
-}
-
-.rejected-state {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.8rem;
-  color: #555;
-  margin-top: 0.5rem;
-}
-
-.undo-btn {
-  background: transparent;
-  border: none;
-  color: #555;
-  font-size: 0.8rem;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-}
-
-.undo-btn:hover {
-  color: #aaa;
 }
 
 .profile-link {

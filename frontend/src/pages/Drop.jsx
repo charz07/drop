@@ -3,42 +3,25 @@ import BrandCard from '../components/BrandCard'
 import { submitRankings, submitRejections } from '../api/recommendations'
 
 export default function Drop({ brands, userId, onRankingsSubmitted }) {
-  const [rankings, setRankings] = useState({})
-  const [rejections, setRejections] = useState(new Set())
+  const [reactions, setReactions] = useState({})
   const [submitting, setSubmitting] = useState(false)
 
-  const allResolved = brands.length > 0 &&
-    brands.every((b) => rankings[b.name] !== undefined || rejections.has(b.name))
-
-  function handleRank(brandName, rank) {
-    setRejections((prev) => { const next = new Set(prev); next.delete(brandName); return next })
-    setRankings((prev) => {
-      const updated = Object.fromEntries(Object.entries(prev).filter(([, r]) => r !== rank))
-      return { ...updated, [brandName]: rank }
-    })
+  function handleReact(brandId, reaction) {
+    setReactions((prev) => ({ ...prev, [brandId]: reaction }))
   }
 
-  function handleReject(brandName) {
-    if (rejections.has(brandName)) {
-      setRejections((prev) => { const next = new Set(prev); next.delete(brandName); return next })
-    } else {
-      setRankings((prev) => { const next = { ...prev }; delete next[brandName]; return next })
-      setRejections((prev) => new Set([...prev, brandName]))
-    }
-  }
-
-  async function handleSubmit() {
+  async function handleNextDrop() {
     setSubmitting(true)
     const rankPayload = brands
-      .filter((b) => rankings[b.name] !== undefined)
-      .map((b) => ({ brand_id: b.id, rank: rankings[b.name] }))
+      .filter((b) => reactions[b.id] === 'want' || reactions[b.id] === 'maybe')
+      .map((b) => ({ brand_id: b.id, rank: reactions[b.id] === 'want' ? 1 : 2 }))
     const rejectPayload = brands
-      .filter((b) => rejections.has(b.name))
+      .filter((b) => reactions[b.id] === 'no')
       .map((b) => b.id)
 
     await Promise.all([
-      submitRankings(rankPayload, userId),
-      submitRejections(rejectPayload, userId),
+      rankPayload.length ? submitRankings(rankPayload, userId) : Promise.resolve(),
+      rejectPayload.length ? submitRejections(rejectPayload, userId) : Promise.resolve(),
     ])
     onRankingsSubmitted()
   }
@@ -47,27 +30,25 @@ export default function Drop({ brands, userId, onRankingsSubmitted }) {
     <div className="page drop-page">
       <div className="drop-header">
         <h2>Your Drop</h2>
-        <p className="drop-subtitle">Rank each brand to improve your next drop.</p>
+        <p className="drop-subtitle">React to each brand to improve your next drop.</p>
       </div>
       <div className="brand-grid">
         {brands.map((brand) => (
           <BrandCard
-            key={brand.name}
+            key={brand.id}
             brand={brand}
-            rank={rankings[brand.name] || null}
-            onRank={handleRank}
-            rejected={rejections.has(brand.name)}
-            onReject={handleReject}
+            reaction={reactions[brand.id] || null}
+            onReact={handleReact}
           />
         ))}
       </div>
       <div className="drop-actions">
         <button
           className="submit-btn"
-          onClick={handleSubmit}
-          disabled={!allResolved || submitting}
+          onClick={handleNextDrop}
+          disabled={submitting}
         >
-          {submitting ? 'Saving…' : allResolved ? 'Submit →' : 'Rank or dismiss all brands to submit'}
+          {submitting ? 'Saving…' : 'Get next drop →'}
         </button>
       </div>
     </div>

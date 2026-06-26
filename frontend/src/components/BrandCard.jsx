@@ -1,6 +1,6 @@
-export default function BrandCard({ brand, rank, onRank, rejected, onReject }) {
+export default function BrandCard({ brand, reaction, onReact }) {
   return (
-    <div className={`brand-card ${rank ? 'ranked' : ''} ${rejected ? 'rejected' : ''}`}>
+    <div className={`brand-card ${reaction ? 'reacted' : ''}`}>
       <div className="brand-image-wrap">
         {brand.image_url
           ? <img src={brand.image_url} alt={brand.name} className="brand-image" onError={(e) => { e.currentTarget.style.display = 'none' }} />
@@ -10,13 +10,11 @@ export default function BrandCard({ brand, rank, onRank, rejected, onReject }) {
       <div className="brand-card-body">
         <div className="brand-card-header">
           <h3>{brand.name}</h3>
-          <div className="brand-card-meta">
-            {brand.url && (
-              <a href={brand.url} target="_blank" rel="noopener noreferrer" className="brand-link">
-                Visit →
-              </a>
-            )}
-          </div>
+          {brand.url && (
+            <a href={brand.url} target="_blank" rel="noopener noreferrer" className="brand-link">
+              Visit →
+            </a>
+          )}
         </div>
         {brand.tags?.length > 0 && (
           <div className="brand-tags">
@@ -26,32 +24,22 @@ export default function BrandCard({ brand, rank, onRank, rejected, onReject }) {
           </div>
         )}
         <p className="brand-description">{brand.description}</p>
-        {!rejected && (
-          <div className="rank-buttons">
-            <span className="rank-label">Rank:</span>
-            {[1, 2, 3, 4].map((n) => (
-              <button
-                key={n}
-                type="button"
-                className={`rank-btn ${rank === n ? 'active' : ''}`}
-                onClick={() => onRank(brand.name, n)}
-              >
-                {n}
-              </button>
-            ))}
-            <button type="button" className="reject-btn" onClick={() => onReject(brand.name)}>
-              Not for me
+        <div className="reaction-buttons">
+          {[
+            { key: 'want', label: 'Want to try' },
+            { key: 'maybe', label: 'Maybe' },
+            { key: 'no', label: 'Not for me' },
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className={`reaction-btn reaction-btn--${key} ${reaction === key ? 'active' : ''}`}
+              onClick={() => onReact(brand.id, reaction === key ? null : key)}
+            >
+              {label}
             </button>
-          </div>
-        )}
-        {rejected && (
-          <div className="rejected-state">
-            <span>Not for me</span>
-            <button type="button" className="undo-btn" onClick={() => onReject(brand.name)}>
-              Undo
-            </button>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </div>
   )
