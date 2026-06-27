@@ -27,6 +27,7 @@ export default function App() {
 
   const [screen, setScreen] = useState(savedTaste ? 'fetching' : 'input')
   const [brands, setBrands] = useState([])
+  const [dropKey, setDropKey] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [exhausted, setExhausted] = useState(false)
@@ -41,6 +42,7 @@ export default function App() {
     try {
       const data = await getRecommendations(tasteDescription, userId)
       setBrands(data.drop)
+      setDropKey((k) => k + 1)
       setExhausted(false)
       setScreen('drop')
     } catch (err) {
@@ -113,6 +115,7 @@ export default function App() {
 
       {screen === 'drop' && (
         <Drop
+          key={dropKey}
           brands={brands}
           userId={userId}
           onRankingsSubmitted={handleRankingsSubmitted}

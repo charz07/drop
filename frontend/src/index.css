@@ -398,72 +398,135 @@ body {
 }
 
 /* ============================================================
-   DROP — INTRO INTERSTITIAL
+   DROP — BOX EXPERIENCE
    ============================================================ */
 
-.drop-intro {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fade-in var(--duration-base) var(--ease-out);
-}
-
-.drop-intro-text {
-  font-family: var(--font-display);
-  font-weight: var(--weight-bold);
-  font-size: var(--text-5xl);
-  letter-spacing: var(--tracking-display);
-  color: var(--ink);
-  line-height: var(--leading-tight);
-}
-
-/* ============================================================
-   DROP — BRAND SCREEN
-   ============================================================ */
-
-.drop-page {
+.drop-box-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
-  padding: 0;
+  padding: var(--space-8) var(--space-5) var(--space-6);
+  gap: var(--space-5);
 }
 
-.drop-counter {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-6);
-  font-family: var(--font-ui);
-  font-size: var(--text-xs);
-  color: var(--ink-muted);
-  z-index: 1;
-  font-weight: var(--weight-regular);
-}
-
-.brand-screen {
+.drop-box-scene {
   flex: 1;
   display: flex;
   flex-direction: column;
-  animation: brand-enter var(--duration-base) var(--ease-out);
+  justify-content: center;
 }
 
-.brand-screen-image {
-  width: 100%;
-  height: 55vh;
+/* Box outer — flat, no 3D tilt causing clipping */
+.drop-box-outer {
+  position: relative;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  flex-shrink: 0;
-  background: var(--surface);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.brand-screen-image img {
+/* Lid — slides up on open, clipped by overflow:hidden on parent */
+.drop-box-lid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: linear-gradient(
+    to bottom,
+    var(--surface-hover) 0%,
+    var(--surface-raised) 100%
+  );
+  border-bottom: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(0);
+  transition:
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+    opacity 0.5s ease 0.15s;
+  z-index: 2;
+}
+
+.drop-box-lid.open {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.drop-box-lid-label {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink-muted);
+}
+
+/* Box body */
+.drop-box-body {
+  background: var(--bg);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 0 12px 32px rgba(0, 0, 0, 0.5),
+    inset 8px 0 16px rgba(0, 0, 0, 0.2),
+    inset -8px 0 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 2x2 grid inside the box */
+.drop-box-interior {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  padding-top: calc(var(--space-3) + 52px); /* clear the lid space */
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.4s var(--ease-out) 0.6s,
+    transform 0.4s var(--ease-out) 0.6s;
+}
+
+.drop-box-interior.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Brand card inside the box */
+.brand-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+  transition-delay: calc(var(--stagger, 0) * 70ms + 0.65s);
+}
+
+.drop-box-interior.visible .brand-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brand-item-image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+
+.brand-item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.brand-screen-placeholder {
+.brand-item-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
@@ -471,47 +534,57 @@ body {
   justify-content: center;
   font-family: var(--font-display);
   font-weight: var(--weight-bold);
-  font-size: 5rem;
+  font-size: 2rem;
   color: var(--ink-disabled);
 }
 
-.brand-screen-body {
-  padding: var(--space-5) var(--space-6) var(--space-3);
+.brand-item-body {
+  padding: var(--space-2) var(--space-2) var(--space-2);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
-.brand-screen-name {
+.brand-item-name {
   font-family: var(--font-display);
   font-weight: var(--weight-bold);
-  font-size: var(--text-5xl);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-display);
   color: var(--ink);
-  line-height: var(--leading-tight);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.brand-screen-rationale {
-  font-family: var(--font-ui);
-  font-size: var(--text-sm);
-  color: var(--ink-secondary);
-  line-height: var(--leading-normal);
-  max-width: 55ch;
-}
-
-.brand-screen-tags {
+/* Compact reactions inside box cards */
+.brand-item-reactions {
   display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-  margin-top: var(--space-1);
+  gap: 3px;
 }
 
-.brand-screen-footer {
-  padding: var(--space-3) var(--space-6) var(--space-10);
+.brand-item-reactions .reaction-btn {
+  height: 30px;
+  font-size: 0.65rem;
+  border-radius: var(--radius-xs);
+  padding: 0;
+}
+
+/* Footer below the box */
+.drop-box-footer {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  margin-top: auto;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.3s var(--ease-out) 0.2s,
+    transform 0.3s var(--ease-out) 0.2s;
+}
+
+.drop-box-footer.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ============================================================

@@ -1,52 +1,26 @@
-import { useState, useEffect, useRef } from 'react'
-import { submitRankings, submitRejections, trackClick } from '../api/recommendations'
+import { useState, useEffect } from 'react'
+import { submitRankings, submitRejections } from '../api/recommendations'
 
 export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfile }) {
-  const [dropState, setDropState] = useState('intro')
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [boxState, setBoxState] = useState('closed')  // 'closed' | 'opening' | 'open'
   const [reactions, setReactions] = useState({})
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
-  const advanceTimer = useRef(null)
 
   useEffect(() => {
-    const t = setTimeout(() => setDropState('brand'), 800)
-    return () => clearTimeout(t)
-  }, [])
-
-  useEffect(() => {
-    return () => { if (advanceTimer.current) clearTimeout(advanceTimer.current) }
+    const t1 = setTimeout(() => setBoxState('opening'), 200)
+    const t2 = setTimeout(() => setBoxState('open'), 1500)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
   function handleReact(brandId, key) {
-    const current = reactions[brandId]
-    const next = current === key ? null : key
-    setReactions((prev) => ({ ...prev, [brandId]: next }))
-
-    if (next !== null) {
-      if (advanceTimer.current) clearTimeout(advanceTimer.current)
-      advanceTimer.current = setTimeout(() => {
-        if (currentIndex < brands.length - 1) {
-          setCurrentIndex((i) => i + 1)
-        } else {
-          setDropState('complete')
-        }
-      }, 300)
-    } else {
-      if (advanceTimer.current) clearTimeout(advanceTimer.current)
-    }
+    setReactions((prev) => ({
+      ...prev,
+      [brandId]: prev[brandId] === key ? null : key,
+    }))
   }
 
-  function handleSkip() {
-    if (advanceTimer.current) clearTimeout(advanceTimer.current)
-    if (currentIndex < brands.length - 1) {
-      setCurrentIndex((i) => i + 1)
-    } else {
-      setDropState('complete')
-    }
-  }
-
-  async function submitReactions(then) {
+  async function handleContinue(then) {
     setSubmitting(true)
     setError(null)
     const rankPayload = brands
@@ -67,94 +41,87 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
     }
   }
 
-  if (dropState === 'intro') {
-    return (
-      <div className="drop-intro">
-        <p className="drop-intro-text">your drop.</p>
-      </div>
-    )
-  }
+  const isOpen = boxState === 'open'
 
-  if (dropState === 'complete') {
-    return (
-      <div className="page drop-complete">
-        <p className="drop-complete-text">that's your drop.</p>
+  return (
+    <div className="drop-box-page">
+      <div className="drop-box-scene">
+        <div className="drop-box-outer">
+
+          {/* Lid */}
+          <div className={`drop-box-lid ${boxState !== 'closed' ? 'open' : ''}`}>
+            <span className="drop-box-lid-label">drop.</span>
+          </div>
+
+          {/* Box body */}
+          <div className="drop-box-body">
+            <div className={`drop-box-interior ${isOpen ? 'visible' : ''}`}>
+              {brands.map((brand, i) => {
+                const rxn = reactions[brand.id] || null
+                return (
+                  <div
+                    key={brand.id}
+                    className="brand-item"
+                    style={{ '--stagger': i }}
+                  >
+                    <div className="brand-item-image">
+                      {brand.image_url
+                        ? (
+                          <img
+                            src={brand.image_url}
+                            alt={brand.name}
+                            onError={(e) => { e.currentTarget.style.display = 'none' }}
+                          />
+                        )
+                        : (
+                          <div className="brand-item-placeholder">{brand.name[0]}</div>
+                        )
+                      }
+                    </div>
+                    <div className="brand-item-body">
+                      <span className="brand-item-name">{brand.name}</span>
+                      <div className="brand-item-reactions">
+                        {[
+                          { key: 'want', label: 'Want' },
+                          { key: 'maybe', label: 'Maybe' },
+                          { key: 'no', label: '✕' },
+                        ].map(({ key, label }) => (
+                          <button
+                            key={key}
+                            type="button"
+                            className={`reaction-btn reaction-btn--${key} ${rxn === key ? 'active' : ''}`}
+                            onClick={() => handleReact(brand.id, key)}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className={`drop-box-footer ${isOpen ? 'visible' : ''}`}>
         {error && <p className="drop-error">{error}</p>}
         <button
           className="btn-primary"
-          onClick={() => submitReactions(onViewProfile)}
-          disabled={submitting}
+          onClick={() => handleContinue(onRankingsSubmitted)}
+          disabled={submitting || !isOpen}
         >
-          {submitting ? 'Saving…' : 'See your profile'}
+          {submitting ? 'Saving…' : 'Get next drop →'}
         </button>
         <button
           className="btn-ghost"
-          onClick={() => submitReactions(onRankingsSubmitted)}
-          disabled={submitting}
+          onClick={() => handleContinue(onViewProfile)}
+          disabled={submitting || !isOpen}
         >
-          Get next drop
-        </button>
-      </div>
-    )
-  }
-
-  const brand = brands[currentIndex]
-  const reactionKey = reactions[brand.id] || null
-
-  return (
-    <div className="drop-page">
-      <span className="drop-counter">{currentIndex + 1} of {brands.length}</span>
-
-      <div key={brand.id} className="brand-screen">
-        <div className="brand-screen-image">
-          {brand.image_url
-            ? (
-              <img
-                src={brand.image_url}
-                alt={brand.name}
-                onError={(e) => { e.currentTarget.style.display = 'none' }}
-              />
-            )
-            : (
-              <div className="brand-screen-placeholder">{brand.name[0]}</div>
-            )
-          }
-        </div>
-
-        <div className="brand-screen-body">
-          <h2 className="brand-screen-name">{brand.name}</h2>
-          {brand.description && (
-            <p className="brand-screen-rationale">{brand.description}</p>
-          )}
-          {brand.tags?.length > 0 && (
-            <div className="brand-screen-tags">
-              {brand.tags.slice(0, 3).map((tag) => (
-                <span key={tag} className="brand-tag">{tag}</span>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="brand-screen-footer">
-        <div className="reaction-buttons">
-          {[
-            { key: 'want', label: 'Want' },
-            { key: 'maybe', label: 'Maybe' },
-            { key: 'no', label: '✕' },
-          ].map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              className={`reaction-btn reaction-btn--${key} ${reactionKey === key ? 'active' : ''}`}
-              onClick={() => handleReact(brand.id, key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <button type="button" className="drop-skip" onClick={handleSkip}>
-          skip
+          See your profile
         </button>
       </div>
     </div>
