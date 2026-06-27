@@ -5,77 +5,87 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
   const [brands, setBrands] = useState([])
   const [summary, setSummary] = useState(null)
   const [fetching, setFetching] = useState(true)
+  const [error, setError] = useState(null)
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
+    setFetching(true)
+    setError(null)
     getProfile(userId)
       .then((data) => {
         setBrands(data.brands)
         setSummary(data.summary)
       })
-      .catch(() => {})
+      .catch(() => setError("Couldn't load your profile."))
       .finally(() => setFetching(false))
-  }, [userId])
+  }, [userId, retryCount])
+
+  const liked = brands.filter((b) => b.rank === 1)
+  const tagCounts = {}
+  liked.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
+  const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t)
 
   return (
     <div className="page profile-page">
       <div className="profile-header">
-        <h2>Your Taste Profile</h2>
-        <p className="drop-subtitle">Built from everything you've reacted to.</p>
+        <h2>your taste.</h2>
       </div>
 
       {fetching && <p className="muted">Loading…</p>}
 
-      {!fetching && summary && (
+      {!fetching && error && (
+        <div className="profile-error">
+          <p>{error}</p>
+          <button className="btn-ghost" onClick={() => setRetryCount((c) => c + 1)}>
+            Try again
+          </button>
+        </div>
+      )}
+
+      {!fetching && !error && summary && (
         <p className="taste-summary">{summary}</p>
       )}
 
-      {!fetching && (() => {
-        const liked = brands.filter((b) => b.rank === 1)
-        const tagCounts = {}
-        liked.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
-        const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t)
-        return topTags.length > 0 && (
-          <>
-            <p className="profile-section-label">Your taste tends toward</p>
-            <div className="profile-tags">
-              {topTags.map((tag) => <span key={tag} className="brand-tag">{tag}</span>)}
-            </div>
-          </>
-        )
-      })()}
+      {!fetching && !error && topTags.length > 0 && (
+        <>
+          <p className="profile-section-label">what you want</p>
+          <div className="profile-tags">
+            {topTags.map((tag) => <span key={tag} className="brand-tag">{tag}</span>)}
+          </div>
+        </>
+      )}
 
-      {!fetching && (() => {
-        const liked = brands.filter((b) => b.rank === 1)
-        return liked.length > 0 ? (
-          <>
-            <p className="profile-section-label">Brands you liked</p>
-            <div className="profile-brand-list">
-              {liked.map((brand) => (
-                <div key={brand.id} className="profile-brand-card">
-                  <div className="profile-brand-row">
-                    <span className="profile-brand-name">{brand.name}</span>
-                  </div>
-                  <span className="profile-brand-desc">{brand.description}</span>
+      {!fetching && !error && liked.length > 0 && (
+        <>
+          <p className="profile-section-label">brands you wanted</p>
+          <div className="profile-brand-list">
+            {liked.map((brand) => (
+              <div key={brand.id} className="profile-brand-card">
+                <div className="profile-brand-row">
+                  <span className="profile-brand-name">{brand.name}</span>
                 </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="muted">Like some brands to build your profile.</p>
-        )
-      })()}
+                <span className="profile-brand-desc">{brand.description}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
-      <div className="drop-actions" style={{ marginTop: '2rem' }}>
+      {!fetching && !error && liked.length === 0 && (
+        <p className="muted">Want some brands from your drops to build your profile.</p>
+      )}
+
+      <div className="drop-actions">
         {hasDrop && (
-          <button type="button" className="submit-btn" onClick={onBackToDrop}>
+          <button type="button" className="btn-ghost" onClick={onBackToDrop}>
             ← Back to drop
           </button>
         )}
-        <button type="button" className="submit-btn" onClick={onNextDrop} disabled={loading}>
-          {loading ? 'Finding your drop…' : 'Get next drop →'}
+        <button type="button" className="btn-primary" onClick={onNextDrop} disabled={loading}>
+          {loading ? 'Finding your drop.' : 'Get next drop →'}
         </button>
-        <button type="button" className="profile-link" onClick={onUpdateTaste}>
-          Retake taste quiz
+        <button type="button" className="btn-ghost" onClick={onUpdateTaste}>
+          Update my taste
         </button>
       </div>
     </div>

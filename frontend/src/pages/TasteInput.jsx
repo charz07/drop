@@ -3,36 +3,36 @@ import { useState } from 'react'
 const QUESTIONS = [
   {
     id: 'intensity',
-    question: 'How do you like your flavors?',
-    options: ['Subtle & delicate', 'Balanced', 'Bold & intense'],
+    question: 'How bold do you go?',
+    options: ['Subtle & smooth', 'Middle ground', 'Big and punchy'],
   },
   {
     id: 'profile',
-    question: 'What draws you in?',
+    question: "Which one's you?",
     options: ['Sweet', 'Savory & umami', 'Tangy & acidic', 'Spicy & complex'],
     multi: true,
   },
   {
     id: 'heat',
-    question: 'How do you feel about heat?',
-    options: ['No spice', 'Mild warmth', 'Bring the heat'],
+    question: 'How do you take heat?',
+    options: ['No spice', 'Mild warmth', 'Bring it on'],
   },
   {
     id: 'texture',
-    question: 'Textures you love?',
+    question: 'What textures are you into?',
     options: ['Crunchy & crispy', 'Creamy & smooth', 'Chewy', 'Light & airy'],
     multi: true,
   },
   {
     id: 'vibe',
-    question: 'What describes your food philosophy?',
+    question: 'What are you on right now?',
     options: ['Clean & simple', 'Functional & healthy', 'Adventurous & global', 'Indulgent & rich', 'Fermented & complex'],
     multi: true,
   },
   {
     id: 'recent',
     type: 'text',
-    question: "Anything you've been into lately?",
+    question: "Something you've had recently that you'd send to a friend?",
     placeholder: 'e.g. Fly By Jing chili crisp, Olipop, anything fermented…',
   },
 ]
@@ -43,9 +43,9 @@ function synthesize(answers) {
   const parts = []
 
   const intensityMap = {
-    'Subtle & delicate': 'subtle, delicate',
-    'Balanced': 'balanced',
-    'Bold & intense': 'bold, intense',
+    'Subtle & smooth': 'subtle, delicate',
+    'Middle ground': 'balanced',
+    'Big and punchy': 'bold, intense',
   }
   if (answers.intensity) parts.push(`I gravitate toward ${intensityMap[answers.intensity]} flavors`)
 
@@ -57,7 +57,7 @@ function synthesize(answers) {
   const heatMap = {
     'No spice': 'I prefer no heat at all',
     'Mild warmth': 'I enjoy mild warmth but not aggressive heat',
-    'Bring the heat': 'I love bold, building spice',
+    'Bring it on': 'I love bold, building spice',
   }
   if (answers.heat) parts.push(heatMap[answers.heat])
 
@@ -90,12 +90,10 @@ export default function TasteInput({ onSubmit, loading }) {
 
   const hasAnswer = q?.type === 'text'
     ? !!currentAnswer?.trim()
-    : q?.multi
-      ? (currentAnswer?.length > 0)
-      : !!currentAnswer
+    : q?.multi ? (currentAnswer?.length > 0) : !!currentAnswer
 
   function getButtonLabel() {
-    if (loading) return 'Finding your drop…'
+    if (loading) return 'Finding your drop.'
     if (isLastStep) return hasAnswer ? 'Get my drop →' : 'Skip →'
     return hasAnswer ? 'Next →' : 'Skip →'
   }
@@ -136,21 +134,20 @@ export default function TasteInput({ onSubmit, loading }) {
   if (mode === 'splash') {
     return (
       <div className="page taste-input-page splash-page">
-        <h1 className="app-title">Drop</h1>
-        <p className="splash-tagline">Discover emerging food and drink brands matched to your taste.</p>
-        <button type="button" className="submit-btn" onClick={() => setMode('quiz')} disabled={loading}>
-          Find my brands →
+        <h1 className="app-title">drop</h1>
+        <p className="splash-tagline">Taste-matched brands, dropped to you.</p>
+        <button type="button" className="btn-primary" onClick={() => setMode('quiz')} disabled={loading}>
+          Find my taste →
         </button>
-        <button type="button" className="profile-link" onClick={handleSurprise} disabled={loading}>
-          Surprise me →
+        <button type="button" className="btn-ghost" onClick={handleSurprise} disabled={loading}>
+          Surprise me
         </button>
       </div>
     )
   }
 
   return (
-    <div className="page taste-input-page">
-      <h1 className="app-title">Drop</h1>
+    <div className="page taste-input-page" style={{ alignItems: 'flex-start' }}>
       <div className="quiz-progress">
         {QUESTIONS.map((_, i) => (
           <div key={i} className={`quiz-pip ${i <= step ? 'active' : ''}`} />
@@ -188,7 +185,7 @@ export default function TasteInput({ onSubmit, loading }) {
       <div className="quiz-footer">
         <button
           type="button"
-          className="submit-btn"
+          className="btn-primary"
           onClick={handleNext}
           disabled={loading}
         >

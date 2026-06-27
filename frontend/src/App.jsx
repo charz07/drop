@@ -89,17 +89,17 @@ export default function App() {
 
       {screen === 'fetching' && (
         <div className="page taste-input-page">
-          <h1 className="app-title">Drop</h1>
-          <p className="muted">Finding your drop…</p>
+          <h1 className="app-title">drop</h1>
+          <p className="muted">on it.</p>
         </div>
       )}
 
       {screen === 'exhausted' && (
         <div className="page taste-input-page">
-          <h1 className="app-title">Drop</h1>
-          <p className="splash-tagline">You've seen every brand in the catalog. Reset your history to start fresh.</p>
-          <button type="button" className="submit-btn" onClick={handleResetHistory} disabled={loading}>
-            {loading ? 'Resetting…' : 'Start fresh →'}
+          <h1 className="app-title">drop</h1>
+          <p className="splash-tagline">You've seen every brand in the catalog. Reset to start fresh.</p>
+          <button type="button" className="btn-primary" onClick={handleResetHistory} disabled={loading}>
+            {loading ? 'Resetting…' : 'fresh start →'}
           </button>
         </div>
       )}
