@@ -1,199 +1,64 @@
 import { useState } from 'react'
 
-const QUESTIONS = [
-  {
-    id: 'intensity',
-    question: 'How bold do you go?',
-    options: ['Subtle & smooth', 'Middle ground', 'Big and punchy'],
-  },
-  {
-    id: 'profile',
-    question: "Which one's you?",
-    options: ['Sweet', 'Savory & umami', 'Tangy & acidic', 'Spicy & complex'],
-    multi: true,
-  },
-  {
-    id: 'heat',
-    question: 'How do you take heat?',
-    options: ['No spice', 'Mild warmth', 'Bring it on'],
-  },
-  {
-    id: 'texture',
-    question: 'What textures are you into?',
-    options: ['Crunchy & crispy', 'Creamy & smooth', 'Chewy', 'Light & airy'],
-    multi: true,
-  },
-  {
-    id: 'vibe',
-    question: 'What are you on right now?',
-    options: ['Clean & simple', 'Functional & healthy', 'Adventurous & global', 'Indulgent & rich', 'Fermented & complex'],
-    multi: true,
-  },
-  {
-    id: 'recent',
-    type: 'text',
-    question: "Something you've had recently that you'd send to a friend?",
-    placeholder: 'e.g. Fly By Jing chili crisp, Olipop, anything fermented…',
-  },
-]
-
-const SURPRISE_DESCRIPTION = "I'm open to everything — adventurous and curious, no strong preferences. Surprise me with something interesting."
-
-function synthesize(answers) {
-  const parts = []
-
-  const intensityMap = {
-    'Subtle & smooth': 'subtle, delicate',
-    'Middle ground': 'balanced',
-    'Big and punchy': 'bold, intense',
-  }
-  if (answers.intensity) parts.push(`I gravitate toward ${intensityMap[answers.intensity]} flavors`)
-
-  if (answers.profile?.length) {
-    const profiles = answers.profile.map((p) => p.toLowerCase())
-    parts.push(`with a strong pull toward ${profiles.join(' and ')}`)
-  }
-
-  const heatMap = {
-    'No spice': 'I prefer no heat at all',
-    'Mild warmth': 'I enjoy mild warmth but not aggressive heat',
-    'Bring it on': 'I love bold, building spice',
-  }
-  if (answers.heat) parts.push(heatMap[answers.heat])
-
-  if (answers.texture?.length) {
-    const textures = answers.texture.map((t) => t.toLowerCase())
-    parts.push(`${textures.join(' and ')} textures appeal to me`)
-  }
-
-  if (answers.vibe?.length) {
-    const vibes = answers.vibe.map((v) => v.toLowerCase())
-    parts.push(`My food philosophy leans ${vibes.join(', ')}`)
-  }
-
-  if (answers.recent?.trim()) {
-    parts.push(answers.recent.trim())
-  }
-
-  const result = parts.join('. ')
-  return result ? result + '.' : SURPRISE_DESCRIPTION
-}
+const SURPRISE = "open to everything — adventurous and curious, no strong preferences. surprise me with something interesting and emerging."
 
 export default function TasteInput({ onSubmit, loading }) {
   const [mode, setMode] = useState('splash')
-  const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [text, setText] = useState('')
 
-  const q = QUESTIONS[step]
-  const currentAnswer = answers[q?.id]
-  const isLastStep = step === QUESTIONS.length - 1
+  const canSubmit = text.trim().length >= 10
 
-  const hasAnswer = q?.type === 'text'
-    ? !!currentAnswer?.trim()
-    : q?.multi ? (currentAnswer?.length > 0) : !!currentAnswer
-
-  function getButtonLabel() {
-    if (loading) return 'Finding your drop.'
-    if (isLastStep) return hasAnswer ? 'Get my drop →' : 'Skip →'
-    return hasAnswer ? 'Next →' : 'Skip →'
-  }
-
-  function handleOption(questionId, option, multi) {
-    setAnswers((prev) => {
-      if (multi) {
-        const current = prev[questionId] || []
-        const next = current.includes(option)
-          ? current.filter((o) => o !== option)
-          : [...current, option]
-        return { ...prev, [questionId]: next }
-      }
-      return { ...prev, [questionId]: option }
-    })
-  }
-
-  function handleNext() {
-    if (step < QUESTIONS.length - 1) {
-      setStep(step + 1)
-    } else {
-      onSubmit(synthesize(answers))
-    }
-  }
-
-  function handleBack() {
-    if (step > 0) {
-      setStep(step - 1)
-    } else {
-      setMode('splash')
-    }
+  function handleSubmit() {
+    if (canSubmit) onSubmit(text.trim())
   }
 
   function handleSurprise() {
-    onSubmit(SURPRISE_DESCRIPTION)
+    onSubmit(SURPRISE)
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSubmit) handleSubmit()
   }
 
   if (mode === 'splash') {
     return (
       <div className="page taste-input-page splash-page">
-        <h1 className="app-title">drop</h1>
-        <p className="splash-tagline">Taste-matched brands, dropped to you.</p>
-        <button type="button" className="btn-primary" onClick={() => setMode('quiz')} disabled={loading}>
-          Find my taste →
+        <h1 className="app-title">drop.</h1>
+        <p className="splash-tagline">taste-matched brands, dropped to you.</p>
+        <button type="button" className="btn-primary" onClick={() => setMode('intake')} disabled={loading}>
+          find my taste →
         </button>
         <button type="button" className="btn-ghost" onClick={handleSurprise} disabled={loading}>
-          Surprise me
+          surprise me
         </button>
       </div>
     )
   }
 
   return (
-    <div className="page taste-input-page" style={{ alignItems: 'flex-start' }}>
-      <div className="quiz-progress">
-        {QUESTIONS.map((_, i) => (
-          <div key={i} className={`quiz-pip ${i <= step ? 'active' : ''}`} />
-        ))}
-      </div>
-      <p className="quiz-question">{q.question}</p>
-      {q.multi && <p className="quiz-multiselect-hint">Select all that apply</p>}
-      {q.type === 'text' ? (
-        <textarea
-          className="taste-textarea quiz-textarea"
-          placeholder={q.placeholder}
-          value={currentAnswer || ''}
-          onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
-          rows={4}
-        />
-      ) : (
-        <div className="quiz-options">
-          {q.options.map((opt) => {
-            const selected = q.multi
-              ? (currentAnswer || []).includes(opt)
-              : currentAnswer === opt
-            return (
-              <button
-                key={opt}
-                type="button"
-                className={`quiz-option ${selected ? 'selected' : ''}`}
-                onClick={() => handleOption(q.id, opt, q.multi)}
-              >
-                {q.multi && selected && <span className="quiz-check">✓ </span>}{opt}
-              </button>
-            )
-          })}
-        </div>
-      )}
+    <div className="page taste-input-page intake-page">
+      <p className="intake-question">what have you been eating and drinking lately?</p>
+      <textarea
+        className="intake-textarea"
+        placeholder={"e.g. Fly By Jing chili crisp, anything fermented, Japanese convenience store snacks — skip anything sweet or mainstream…"}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={handleKeyDown}
+        rows={6}
+        autoFocus
+      />
       <div className="quiz-footer">
         <button
           type="button"
           className="btn-primary"
-          onClick={handleNext}
-          disabled={loading}
+          onClick={handleSubmit}
+          disabled={loading || !canSubmit}
         >
-          {getButtonLabel()}
+          {loading ? 'finding your drop.' : 'find my drop →'}
         </button>
         <div className="quiz-footer-row">
-          <button type="button" className="quiz-back-btn" onClick={handleBack} disabled={loading}>
-            ← Back
+          <button type="button" className="quiz-back-btn" onClick={() => setMode('splash')} disabled={loading}>
+            ← back
           </button>
         </div>
       </div>
