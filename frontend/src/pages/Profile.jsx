@@ -20,9 +20,9 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
       .finally(() => setFetching(false))
   }, [userId, retryCount])
 
-  const liked = brands.filter((b) => b.rank === 1)
+  const wanted = brands.filter((b) => b.reaction === 'want')
   const tagCounts = {}
-  liked.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
+  wanted.forEach((b) => (b.tags || []).forEach((t) => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
   const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t)
 
   return (
@@ -55,24 +55,31 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
         </>
       )}
 
-      {!fetching && !error && liked.length > 0 && (
+      {!fetching && !error && brands.length > 0 && (
         <>
-          <p className="profile-section-label">brands you wanted</p>
+          <p className="profile-section-label">everything you've tried</p>
           <div className="profile-brand-list">
-            {liked.map((brand) => (
-              <div key={brand.id} className="profile-brand-card">
-                <div className="profile-brand-row">
-                  <span className="profile-brand-name">{brand.name}</span>
+            {['want', 'maybe', 'no'].flatMap((rxn) =>
+              brands.filter((b) => b.reaction === rxn).map((brand) => (
+                <div key={brand.id} className="profile-brand-card">
+                  <div className="profile-brand-row">
+                    <span className="profile-brand-name">{brand.name}</span>
+                    <span className={`profile-rxn-badge profile-rxn-badge--${brand.reaction}`}>
+                      {brand.reaction === 'no' ? '✕' : brand.reaction}
+                    </span>
+                  </div>
+                  {brand.description && (
+                    <span className="profile-brand-desc">{brand.description}</span>
+                  )}
                 </div>
-                <span className="profile-brand-desc">{brand.description}</span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </>
       )}
 
-      {!fetching && !error && liked.length === 0 && (
-        <p className="muted">Want some brands from your drops to build your profile.</p>
+      {!fetching && !error && brands.length === 0 && (
+        <p className="muted">Rate some brands from your drops to build your profile.</p>
       )}
 
       <div className="drop-actions">

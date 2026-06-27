@@ -102,7 +102,7 @@ def save_rankings(user_id: str, rankings: list[dict]):
 def get_user_profile(user_id: str) -> list[dict]:
     response = (
         supabase.table("rankings")
-        .select("rank, brands(id, name, description, tags)")
+        .select("rank, brands(id, name, description, tags, image_url)")
         .eq("user_id", user_id)
         .order("rank")
         .execute()
@@ -111,6 +111,33 @@ def get_user_profile(user_id: str) -> list[dict]:
         {"rank": row["rank"], **row["brands"]}
         for row in response.data
     ]
+
+
+def get_all_reacted_brands(user_id: str) -> list[dict]:
+    rankings_response = (
+        supabase.table("rankings")
+        .select("rank, brands(id, name, description, tags, image_url)")
+        .eq("user_id", user_id)
+        .order("rank")
+        .execute()
+    )
+    ranked = [
+        {"reaction": "want" if row["rank"] == 1 else "maybe", **row["brands"]}
+        for row in rankings_response.data
+    ]
+
+    rejections_response = (
+        supabase.table("rejections")
+        .select("brands(id, name, description, tags, image_url)")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    rejected = [
+        {"reaction": "no", **row["brands"]}
+        for row in rejections_response.data
+    ]
+
+    return ranked + rejected
 
 
 def save_rejections(user_id: str, brand_ids: list[str]):

@@ -951,6 +951,32 @@ body {
   line-height: var(--leading-normal);
 }
 
+.profile-rxn-badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+}
+
+.profile-rxn-badge--want {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.profile-rxn-badge--maybe {
+  background: #c8a96e;
+  color: #1a1200;
+}
+
+.profile-rxn-badge--no {
+  background: var(--surface-raised);
+  color: var(--ink-muted);
+}
+
 .profile-error {
   display: flex;
   flex-direction: column;

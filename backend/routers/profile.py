@@ -2,7 +2,7 @@ import os
 from fastapi import APIRouter
 from groq import AsyncGroq
 from dotenv import load_dotenv
-from services.database import get_user_profile
+from services.database import get_user_profile, get_all_reacted_brands
 
 load_dotenv()
 
@@ -12,12 +12,12 @@ client = AsyncGroq(api_key=os.environ["GROQ_API_KEY"])
 
 @router.get("/")
 async def user_profile(user_id: str):
-    brands = get_user_profile(user_id)
+    all_brands = get_all_reacted_brands(user_id)
+    ranked_brands = get_user_profile(user_id)
+
     summary = None
-    if brands:
-        top_brands = [b for b in brands if b["rank"] <= 2]
-        if not top_brands:
-            top_brands = brands[:2]
+    if ranked_brands:
+        top_brands = [b for b in ranked_brands if b["rank"] <= 2] or ranked_brands[:2]
         brand_lines = "\n".join(
             f"- {b['name']} (ranked #{b['rank']}): {b['description']}"
             for b in top_brands
@@ -35,4 +35,5 @@ async def user_profile(user_id: str):
             max_tokens=120,
         )
         summary = response.choices[0].message.content.strip()
-    return {"brands": brands, "summary": summary}
+
+    return {"brands": all_brands, "summary": summary}
