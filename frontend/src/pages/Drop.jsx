@@ -42,6 +42,8 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
   }
 
   const isOpen = boxState === 'open'
+  const ratedCount = brands.filter((b) => reactions[b.id]).length
+  const allRated = ratedCount === brands.length
 
   return (
     <div className="drop-box-page">
@@ -131,17 +133,22 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
       {/* Footer */}
       <div className={`drop-box-footer ${isOpen ? 'visible' : ''}`}>
         {error && <p className="drop-error">{error}</p>}
+        {isOpen && !allRated && (
+          <p className="drop-rate-hint">
+            {brands.length - ratedCount} left to rate — hover each card
+          </p>
+        )}
         <button
           className="btn-primary"
           onClick={() => handleContinue(onRankingsSubmitted)}
-          disabled={submitting || !isOpen}
+          disabled={submitting || !isOpen || !allRated}
         >
           {submitting ? 'Saving…' : 'Get next drop →'}
         </button>
         <button
           className="btn-ghost"
           onClick={() => handleContinue(onViewProfile)}
-          disabled={submitting || !isOpen}
+          disabled={submitting || !isOpen || !allRated}
         >
           See your profile
         </button>

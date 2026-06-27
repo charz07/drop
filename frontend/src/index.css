@@ -749,6 +749,13 @@ body {
   transform: translateY(0);
 }
 
+.drop-rate-hint {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  text-align: center;
+}
+
 /* ============================================================
    REACTIONS
    ============================================================ */
