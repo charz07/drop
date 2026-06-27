@@ -416,42 +416,36 @@ body {
   justify-content: center;
 }
 
-/* Box outer — flat, no 3D tilt causing clipping */
+/* Box outer — perspective container for lid flip, no overflow:hidden */
 .drop-box-outer {
   position: relative;
+  perspective: 1000px;
   border-radius: var(--radius-lg);
-  overflow: hidden;
   box-shadow:
     0 24px 48px rgba(0, 0, 0, 0.6),
     0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Lid — slides up on open, clipped by overflow:hidden on parent */
+/* Lid — covers the whole box face, flips backward on its top hinge */
 .drop-box-lid {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 52px;
-  background: linear-gradient(
-    to bottom,
-    var(--surface-hover) 0%,
-    var(--surface-raised) 100%
-  );
-  border-bottom: 1px solid var(--border-strong);
+  inset: 0;
+  z-index: 2;
+  background: var(--surface-raised);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: translateY(0);
-  transition:
-    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
-    opacity 0.5s ease 0.15s;
-  z-index: 2;
+  transform-origin: center top;
+  transform: rotateX(0deg);
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .drop-box-lid.open {
-  transform: translateY(-100%);
-  opacity: 0;
+  transform: rotateX(-105deg);
 }
 
 .drop-box-lid-label {
@@ -462,7 +456,7 @@ body {
   color: var(--ink-muted);
 }
 
-/* Box body */
+/* Box body — always present underneath the lid */
 .drop-box-body {
   background: var(--bg);
   border: 1.5px solid var(--border-strong);
@@ -479,12 +473,11 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: var(--space-2);
   padding: var(--space-3);
-  padding-top: calc(var(--space-3) + 52px); /* clear the lid space */
   opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(6px);
   transition:
-    opacity 0.4s var(--ease-out) 0.6s,
-    transform 0.4s var(--ease-out) 0.6s;
+    opacity 0.45s var(--ease-out) 0.15s,
+    transform 0.45s var(--ease-out) 0.15s;
 }
 
 .drop-box-interior.visible {
@@ -501,7 +494,7 @@ body {
   transition:
     opacity 0.3s var(--ease-out),
     transform 0.3s var(--ease-out);
-  transition-delay: calc(var(--stagger, 0) * 70ms + 0.65s);
+  transition-delay: calc(var(--stagger, 0) * 80ms + 0.1s);
 }
 
 .drop-box-interior.visible .brand-item {

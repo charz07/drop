@@ -8,8 +8,8 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    const t1 = setTimeout(() => setBoxState('opening'), 200)
-    const t2 = setTimeout(() => setBoxState('open'), 1500)
+    const t1 = setTimeout(() => setBoxState('opening'), 300)
+    const t2 = setTimeout(() => setBoxState('open'), 1350)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
