@@ -104,9 +104,7 @@ export default function App() {
           <p className="fetching-tagline">
             {dropNum <= 1 ? 'finding your first drop.' : `preparing drop ${dropNum}.`}
           </p>
-          {dropNum > 1 && (
-            <p className="fetching-hint">each rating shapes what comes next.</p>
-          )}
+          {dropNum > 1 && <p className="fetching-hint">tuning in.</p>}
         </div>
       )}
 
