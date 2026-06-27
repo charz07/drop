@@ -21,6 +21,10 @@ function saveTaste(taste) {
   localStorage.setItem('drop_taste', taste)
 }
 
+function getStoredDropNum() {
+  return parseInt(localStorage.getItem('drop_num') || '0', 10)
+}
+
 export default function App() {
   const userId = getUserId()
   const savedTaste = getSavedTaste()
@@ -28,6 +32,7 @@ export default function App() {
   const [screen, setScreen] = useState(savedTaste ? 'fetching' : 'input')
   const [brands, setBrands] = useState([])
   const [dropKey, setDropKey] = useState(0)
+  const [dropNum, setDropNum] = useState(getStoredDropNum)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [exhausted, setExhausted] = useState(false)
@@ -37,6 +42,10 @@ export default function App() {
   }, [])
 
   async function fetchDrop(tasteDescription) {
+    const next = getStoredDropNum() + 1
+    localStorage.setItem('drop_num', String(next))
+    setDropNum(next)
+    setScreen('fetching')
     setLoading(true)
     setError(null)
     try {
@@ -90,27 +99,29 @@ export default function App() {
       {error && <div className="error-banner">{error}</div>}
 
       {screen === 'fetching' && (
-        <div className="page taste-input-page">
-          <h1 className="app-title">drop</h1>
-          <p className="muted">on it.</p>
+        <div className="page fetching-page">
+          <h1 className="app-title fetching-pulse">drop.</h1>
+          <p className="fetching-tagline">
+            {dropNum <= 1 ? 'finding your first drop.' : `preparing drop ${dropNum}.`}
+          </p>
+          {dropNum > 1 && (
+            <p className="fetching-hint">each rating shapes what comes next.</p>
+          )}
         </div>
       )}
 
       {screen === 'exhausted' && (
-        <div className="page taste-input-page">
-          <h1 className="app-title">drop</h1>
-          <p className="splash-tagline">You've seen every brand in the catalog. Reset to start fresh.</p>
+        <div className="page fetching-page">
+          <h1 className="app-title">drop.</h1>
+          <p className="fetching-tagline">you've seen everything in the catalog.</p>
           <button type="button" className="btn-primary" onClick={handleResetHistory} disabled={loading}>
-            {loading ? 'Resetting…' : 'fresh start →'}
+            {loading ? 'resetting…' : 'fresh start →'}
           </button>
         </div>
       )}
 
       {screen === 'input' && (
-        <TasteInput
-          onSubmit={handleSubmit}
-          loading={loading}
-        />
+        <TasteInput onSubmit={handleSubmit} loading={loading} />
       )}
 
       {screen === 'drop' && (
@@ -118,6 +129,7 @@ export default function App() {
           key={dropKey}
           brands={brands}
           userId={userId}
+          dropNum={dropNum}
           onRankingsSubmitted={handleRankingsSubmitted}
           onViewProfile={handleViewProfile}
         />

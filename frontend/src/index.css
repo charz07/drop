@@ -398,8 +398,58 @@ body {
 }
 
 /* ============================================================
+   FETCHING — between-drop ceremony
+   ============================================================ */
+
+.fetching-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  text-align: center;
+  padding: var(--space-6);
+}
+
+@keyframes fetching-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.fetching-pulse {
+  animation: fetching-breathe 2s ease-in-out infinite;
+}
+
+.fetching-tagline {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--ink-secondary);
+  letter-spacing: var(--tracking-display);
+}
+
+.fetching-hint {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+/* ============================================================
    DROP — BOX EXPERIENCE
    ============================================================ */
+
+.drop-box-header {
+  display: flex;
+  align-items: center;
+}
+
+.drop-num-label {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink-muted);
+}
 
 .drop-box-page {
   min-height: 100vh;

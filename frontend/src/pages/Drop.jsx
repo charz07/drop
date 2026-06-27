@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { submitRankings, submitRejections } from '../api/recommendations'
 
-export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfile }) {
+export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onViewProfile }) {
   const [boxState, setBoxState] = useState('closed')  // 'closed' | 'opening' | 'open'
   const [reactions, setReactions] = useState({})
   const [submitting, setSubmitting] = useState(false)
@@ -45,6 +45,9 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
 
   return (
     <div className="drop-box-page">
+      <div className="drop-box-header">
+        <span className="drop-num-label">drop {dropNum}</span>
+      </div>
       <div className="drop-box-scene">
         <div className="drop-box-outer">
 
