@@ -2,7 +2,9 @@
 
 **[vdmi.vercel.app](https://vdmi.vercel.app)**
 
-A taste-profile-driven discovery platform for emerging food and drink brands. Drop learns your palate through conversation, then surfaces 4 curated brands per session matched by embedding similarity. React to each one — the algorithm learns and every future drop gets sharper.
+Think of it like receiving a sample box curated specifically for your palate — except the curator learns who you are first, and gets better with every box you open.
+
+Drop is a digital sample box for emerging food and drink brands. Tell it what you eat, what you love, what you'd never touch. It builds a taste profile, then drops 4 brands into a box — brands you've never heard of but will probably love. Open the box, flip each card, react. Every future drop gets sharper.
 
 ## How it works
 
@@ -10,7 +12,7 @@ A taste-profile-driven discovery platform for emerging food and drink brands. Dr
 
 2. **Embedding + matching** — your conversation is synthesized into a rich first-person taste profile, embedded via Google Gemini (`gemini-embedding-001`), and compared against brand vectors in Supabase using cosine similarity. Brands you've already seen or explicitly passed are excluded.
 
-3. **The drop** — 4 brands surface inside an animated box. Flip each card to read the description, react (want / maybe / pass), then submit. Reactions are saved to Supabase.
+3. **The drop** — your box arrives: 4 brands, each one a card. Flip to read the description. React (want / maybe / pass). It's the digital equivalent of reaching into a sample box — but every item was put there for you specifically.
 
 4. **Preference learning** — ranked brands build a weighted preference vector (want = higher weight, pass = negative weight) that blends with your taste embedding at 40/60 for future drops. A tag-affinity score (15% weight) adds a second signal on top of cosine similarity.
 
