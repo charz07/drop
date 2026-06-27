@@ -2,9 +2,13 @@
 
 **[vdmi.vercel.app](https://vdmi.vercel.app)**
 
-Think of it like receiving a sample box curated specifically for your palate — except the curator learns who you are first, and gets better with every box you open.
+Emerging food and drink brands make great products. Most of them never reach the right person.
 
-Drop is a digital sample box for emerging food and drink brands. Tell it what you eat, what you love, what you'd never touch. It builds a taste profile, then drops 4 brands into a box — brands you've never heard of but will probably love. Open the box, flip each card, react. Every future drop gets sharper.
+Drop is a taste-matched discovery platform that puts emerging CPG brands in front of consumers whose palate actually fits. Brands get precision placement — not paid reach, not demographic guessing, but embedding-based matching against a real taste profile built from conversation. Consumers get a curated digital sample box, personalized to what they actually eat.
+
+**For brands:** your product surfaces inside a drop of 4, sent to users whose taste profile matches your flavor vector. Every reaction (want / maybe / pass) is a signal — who wants you, who doesn't, and what that says about your audience.
+
+**For consumers:** tell Drop what you eat, what you love, what you'd never touch. It builds your taste profile, then drops a box of 4 brands you've never heard of but will probably love. React to each one. Every future drop gets sharper.
 
 ## How it works
 
