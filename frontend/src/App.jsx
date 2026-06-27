@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import TasteInput from './pages/TasteInput'
 import Drop from './pages/Drop'
 import Profile from './pages/Profile'
@@ -36,9 +36,13 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [exhausted, setExhausted] = useState(false)
+  const initFetched = useRef(false)
 
   useEffect(() => {
-    if (savedTaste) fetchDrop(savedTaste)
+    if (savedTaste && !initFetched.current) {
+      initFetched.current = true
+      fetchDrop(savedTaste)
+    }
   }, [])
 
   async function fetchDrop(tasteDescription) {
@@ -102,7 +106,9 @@ export default function App() {
         <div className="page fetching-page">
           <h1 className="app-title fetching-pulse">drop.</h1>
           <p className="fetching-tagline">
-            {dropNum <= 1 ? 'finding your first drop.' : `preparing drop ${dropNum}.`}
+            {dropNum <= 1
+              ? 'finding your first drop.'
+              : <>preparing drop <strong>{dropNum}.</strong></>}
           </p>
           {dropNum > 1 && <p className="fetching-hint">tuning in.</p>}
         </div>

@@ -1,30 +1,49 @@
 import { useEffect, useState } from 'react'
 import { getProfile } from '../api/recommendations'
+import { tagColorClass } from '../utils/tagColor'
 
 const PERSONAS = {
   'heat-seeker': {
     label: 'the heat seeker.',
     desc: 'every drop, you find the one that burns — and you want it.',
+    tint: 'oklch(0.96 0.04 22)',
+    border: 'oklch(0.80 0.10 22)',
+    color: 'oklch(0.40 0.18 22)',
   },
   'ferment-head': {
     label: 'the ferment head.',
     desc: 'funk, acid, complexity. you want the stuff that takes time to understand.',
+    tint: 'oklch(0.96 0.04 148)',
+    border: 'oklch(0.78 0.10 148)',
+    color: 'oklch(0.36 0.16 148)',
   },
   'globalist': {
     label: 'the globalist.',
     desc: 'you pass on anything that could have been made in Ohio.',
+    tint: 'oklch(0.96 0.04 55)',
+    border: 'oklch(0.80 0.10 50)',
+    color: 'oklch(0.38 0.15 45)',
   },
   'maximalist': {
     label: 'the maximalist.',
     desc: 'subtle never cuts it. bold, rich, more — the stuff that makes an impression.',
+    tint: 'oklch(0.96 0.04 340)',
+    border: 'oklch(0.78 0.10 340)',
+    color: 'oklch(0.38 0.18 340)',
   },
   'purist': {
     label: 'the purist.',
     desc: 'one, maybe two per drop. standards are high and you know it.',
+    tint: 'oklch(0.96 0.04 248)',
+    border: 'oklch(0.78 0.10 248)',
+    color: 'oklch(0.38 0.14 248)',
   },
   'explorer': {
     label: 'the explorer.',
     desc: 'you rarely say no. every drop, you find something. you\'re here for all of it.',
+    tint: 'oklch(0.96 0.04 188)',
+    border: 'oklch(0.78 0.10 188)',
+    color: 'oklch(0.36 0.14 188)',
   },
 }
 
@@ -67,12 +86,21 @@ function derivePersona(brands) {
   return wantRate > 0.6 ? 'explorer' : 'explorer'
 }
 
+function getDietaryProfile() {
+  try {
+    return JSON.parse(localStorage.getItem('drop_dietary') || 'null')
+  } catch {
+    return null
+  }
+}
+
 export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDrop, hasDrop, loading }) {
   const [brands, setBrands] = useState([])
   const [summary, setSummary] = useState(null)
   const [fetching, setFetching] = useState(true)
   const [error, setError] = useState(null)
   const [retryCount, setRetryCount] = useState(0)
+  const dietary = getDietaryProfile()
 
   useEffect(() => {
     setFetching(true)
@@ -89,16 +117,21 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
   const wanted = brands.filter((b) => b.reaction === 'want')
   const passed = brands.filter((b) => b.reaction === 'no')
 
-  const topTag = (() => {
+  const topTags = (() => {
     const counts = {}
     wanted.forEach((b) => (b.tags || []).forEach((t) => { counts[t] = (counts[t] || 0) + 1 }))
-    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => t)
   })()
 
-  const topSkipTag = (() => {
+  const topSkipTags = (() => {
     const counts = {}
     passed.forEach((b) => (b.tags || []).forEach((t) => { counts[t] = (counts[t] || 0) + 1 }))
-    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+    const topTagSet = new Set(topTags)
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .filter(([t]) => !topTagSet.has(t))
+      .slice(0, 3)
+      .map(([t]) => t)
   })()
 
   const persona = derivePersona(brands)
@@ -123,8 +156,11 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
         <>
           {/* Persona */}
           {personaData && (
-            <div className="profile-persona">
-              <h1 className="persona-label">{personaData.label}</h1>
+            <div
+              className="profile-persona"
+              style={{ background: personaData.tint, borderColor: personaData.border }}
+            >
+              <h1 className="persona-label" style={{ color: personaData.color }}>{personaData.label}</h1>
               <p className="persona-desc">{summary || personaData.desc}</p>
             </div>
           )}
@@ -151,16 +187,46 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
                 </div>
               </div>
 
-              {topTag && (
+              {topTags.length > 0 && (
                 <div className="superlative-insight">
                   <span className="superlative-insight-label">you always come back to</span>
-                  <span className="brand-tag">{topTag}</span>
+                  <div className="superlative-insight-tags">
+                    {topTags.map((t) => <span key={t} className={`brand-tag ${tagColorClass(t)}`}>{t}</span>)}
+                  </div>
                 </div>
               )}
-              {topSkipTag && (
+              {topSkipTags.length > 0 && (
                 <div className="superlative-insight">
                   <span className="superlative-insight-label">you consistently skip</span>
-                  <span className="brand-tag brand-tag--muted">{topSkipTag}</span>
+                  <div className="superlative-insight-tags">
+                    {topSkipTags.map((t) => <span key={t} className={`brand-tag ${tagColorClass(t)}`}>{t}</span>)}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Dietary + Goals */}
+          {dietary && (dietary.restrictions?.length > 0 || dietary.goals?.length > 0) && (
+            <div className="profile-dietary">
+              {dietary.restrictions?.length > 0 && (
+                <div className="profile-dietary-row">
+                  <span className="profile-dietary-label">dietary</span>
+                  <div className="profile-dietary-tags">
+                    {dietary.restrictions.map((r) => (
+                      <span key={r} className="brand-tag brand-tag--dietary">{r}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {dietary.goals?.length > 0 && (
+                <div className="profile-dietary-row">
+                  <span className="profile-dietary-label">goals</span>
+                  <div className="profile-dietary-tags">
+                    {dietary.goals.map((g) => (
+                      <span key={g} className="brand-tag brand-tag--goal">{g}</span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -183,7 +249,7 @@ export default function Profile({ userId, onNextDrop, onUpdateTaste, onBackToDro
                         <div className="profile-brand-row">
                           <span className="profile-brand-name">{brand.name}</span>
                           <span className={`profile-rxn-badge profile-rxn-badge--${brand.reaction}`}>
-                            {brand.reaction === 'no' ? '✕' : brand.reaction}
+                            {brand.reaction === 'want' ? 'want' : brand.reaction === 'maybe' ? 'maybe' : 'pass'}
                           </span>
                         </div>
                         {brand.description && (

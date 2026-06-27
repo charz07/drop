@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { sendChatMessage } from '../api/recommendations'
 
-const OPENING = 'what have you been eating and drinking lately?'
+const OPENING = "hi! welcome to drop 👋 i'm here to match you with emerging food and drink brands you'll actually love. i'll ask you a few questions, put together a box of 4 brands for you to try, and every time you rate a drop, the next one gets more dialed in. you'll build up a taste profile over time too. okay — what have you been eating and drinking lately?"
 const SURPRISE = "open to everything — adventurous and curious, no strong preferences. surprise me with something interesting and emerging."
 
 export default function TasteInput({ onSubmit, loading }) {
@@ -38,6 +38,9 @@ export default function TasteInput({ onSubmit, loading }) {
       if (res.done) {
         setDone(true)
         setTasteDescription(res.taste_description)
+        if (res.dietary_profile) {
+          localStorage.setItem('drop_dietary', JSON.stringify(res.dietary_profile))
+        }
       }
     } catch {
       setMessages((prev) => [...prev, { role: 'assistant', content: 'something went wrong. try again?' }])
@@ -67,26 +70,34 @@ export default function TasteInput({ onSubmit, loading }) {
         <button type="button" className="btn-primary" onClick={() => setMode('chat')} disabled={loading}>
           find my taste →
         </button>
-        <button type="button" className="btn-ghost" onClick={() => onSubmit(SURPRISE)} disabled={loading}>
-          surprise me
-        </button>
       </div>
     )
   }
 
   return (
     <div className="chat-page">
+      <div className="chat-header">
+        <span className="chat-brand-label">drop.</span>
+      </div>
       <div className="chat-messages">
-        {messages.map((m, i) => (
-          <div key={i} className={`chat-bubble chat-bubble--${m.role}`}>
-            {m.content}
-          </div>
-        ))}
+        {messages.map((m, i) =>
+          m.role === 'assistant' ? (
+            <div key={i} className="chat-assistant-row">
+              <div className="chat-avatar">d.</div>
+              <div className="chat-bubble chat-bubble--assistant">{m.content}</div>
+            </div>
+          ) : (
+            <div key={i} className="chat-bubble chat-bubble--user">{m.content}</div>
+          )
+        )}
         {thinking && (
-          <div className="chat-bubble chat-bubble--assistant chat-bubble--thinking">
-            <span className="chat-dot" />
-            <span className="chat-dot" />
-            <span className="chat-dot" />
+          <div className="chat-assistant-row">
+            <div className="chat-avatar">d.</div>
+            <div className="chat-bubble chat-bubble--assistant chat-bubble--thinking">
+              <span className="chat-dot" />
+              <span className="chat-dot" />
+              <span className="chat-dot" />
+            </div>
           </div>
         )}
         <div ref={bottomRef} />
@@ -98,26 +109,36 @@ export default function TasteInput({ onSubmit, loading }) {
             {loading ? 'finding your drop.' : 'see my drop →'}
           </button>
         ) : (
-          <div className="chat-input-row">
-            <textarea
-              ref={inputRef}
-              className="chat-input"
-              placeholder="type here…"
-              value={input}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              rows={1}
-              disabled={thinking}
-            />
+          <>
+            <div className="chat-input-row">
+              <textarea
+                ref={inputRef}
+                className="chat-input"
+                placeholder="type here…"
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                rows={1}
+                disabled={thinking}
+              />
+              <button
+                type="button"
+                className="chat-send-btn"
+                onClick={handleSend}
+                disabled={!input.trim() || thinking}
+              >
+                →
+              </button>
+            </div>
             <button
               type="button"
-              className="chat-send-btn"
-              onClick={handleSend}
-              disabled={!input.trim() || thinking}
+              className="chat-surprise-btn"
+              onClick={() => onSubmit(SURPRISE)}
+              disabled={loading || thinking}
             >
-              →
+              surprise me (skip quiz)
             </button>
-          </div>
+          </>
         )}
       </div>
     </div>

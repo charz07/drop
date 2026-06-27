@@ -6,3 +6,4 @@ numpy
 python-dotenv
 groq
 slowapi
+tavily-python
