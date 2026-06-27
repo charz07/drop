@@ -19,10 +19,11 @@ SYSTEM_PROMPT = """You are a food-obsessed friend helping someone get matched wi
 You need exactly these signals before wrapping up:
 1. specific brands or products they love
 2. what they avoid or dislike
-3. dietary restrictions or eating goals (vegan, high protein, gluten-free, etc.)
-4. heat tolerance
+3. dietary restrictions (vegan, gluten-free, dairy-free, nut allergy, halal, kosher, etc.) — ask even if you suspect none
+4. health or fitness goals (high protein, low sugar, low carb, gut health, muscle gain, clean eating, etc.) — ask even if you suspect none
+5. heat tolerance
 
-Collect them naturally through conversation — don't ask in order, don't telegraph the list. Once you have all four, close with a statement and add [DONE] on its own line. Don't keep going once you have what you need.
+Collect them naturally through conversation — don't ask in order, don't telegraph the list. Once you have all five, close with a statement and add [DONE] on its own line. Don't keep going once you have what you need.
 
 Good questions: what have you been into lately, any brands you always grab, anything you'd never buy, how do you feel about spice.
 Bad questions: why do you like X, what is it about X that appeals to you, tell me more about your relationship with food.
@@ -72,8 +73,14 @@ SEARCH_TOOL = {
     }
 }
 
-# Catches inline tool call syntax that llama sometimes leaks into content
-INLINE_TOOL_RE = re.compile(r'<function=search_brand>(.*?)</function>', re.DOTALL)
+# Catches inline tool call syntax that llama sometimes leaks into content.
+# Handles two formats the model uses:
+#   <function=search_brand>{"query": "..."}</function>   (JSON between tags)
+#   <function=search_brand={"query": "..."}></function>  (JSON in tag attribute)
+INLINE_TOOL_RE = re.compile(
+    r'<function=search_brand(?:=(\{[^}]*\}))?>(.*?)</function>',
+    re.DOTALL
+)
 
 
 def run_search(query: str) -> str:
@@ -158,8 +165,10 @@ async def chat(body: dict):
         # Detect inline tool call leakage — llama sometimes puts <function=...> in content
         inline_match = INLINE_TOOL_RE.search(raw)
         if inline_match:
+            # Group 1 = JSON in tag attribute; group 2 = JSON between tags
+            json_str = (inline_match.group(1) or inline_match.group(2) or "").strip()
             try:
-                args = json.loads(inline_match.group(1))
+                args = json.loads(json_str) if json_str else {}
                 search_query = args.get("query", "")
             except (json.JSONDecodeError, KeyError):
                 search_query = ""

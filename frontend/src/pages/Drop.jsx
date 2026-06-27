@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react'
 import { submitRankings, submitRejections } from '../api/recommendations'
 import BrandSheet from '../components/BrandSheet'
-import { tagColorClass } from '../utils/tagColor'
 
-export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onViewProfile }) {
-  const [boxState, setBoxState] = useState('idle')  // 'idle' | 'opening' | 'open'
-  const [reactions, setReactions] = useState({})
+export default function Drop({ brands, userId, dropNum, reactions, onReact, submitted, onRankingsSubmitted, onViewProfile }) {
+  const [boxState, setBoxState] = useState(submitted ? 'open' : 'idle')
   const [tappedId, setTappedId] = useState(null)
   const [sheetBrand, setSheetBrand] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    if (submitted) return
     const t1 = setTimeout(() => setBoxState('opening'), 120)
     const t2 = setTimeout(() => setBoxState('open'), 850)
     return () => { clearTimeout(t1); clearTimeout(t2) }
@@ -23,10 +22,7 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
 
   function handleReact(brandId, key, e) {
     e?.stopPropagation()
-    setReactions((prev) => ({
-      ...prev,
-      [brandId]: prev[brandId] === key ? null : key,
-    }))
+    onReact(brandId, key)
     setTappedId(null)
     setSheetBrand(null)
   }
@@ -61,14 +57,15 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
     <div className="drop-box-page">
       <div className="drop-box-header">
         <span className="drop-num-label">drop {dropNum}</span>
+        <p className="drop-value-tagline">rate each one — every drop gets sharper</p>
       </div>
       <div className="drop-box-scene">
         {isOpen && (
           <p className="drop-rate-hint">
-            {allRated ? 'all rated.' : `${brands.length - ratedCount} left — flip each card`}
+            {allRated ? 'all rated.' : `${brands.length - ratedCount} left`}
           </p>
         )}
-        <div className={`drop-box-outer${boxState !== 'idle' ? ' opening' : ''}`}>
+        <div className={`drop-box-outer${!submitted && boxState !== 'idle' ? ' opening' : ''}`}>
 
           {/* Lid */}
           <div className={`drop-box-lid${lidOpen ? ' open' : ''}`}>
@@ -83,9 +80,17 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
                 return (
                   <div
                     key={brand.id}
+                    tabIndex={isOpen ? 0 : -1}
+                    aria-label={`${brand.name}${rxn ? ` — ${rxn === 'no' ? 'passed' : rxn}` : ''}`}
                     className={`brand-item${isOpen ? ' visible' : ''}${tappedId === brand.id ? ' brand-item--tapped' : ''}`}
                     style={{ '--stagger': i }}
                     onClick={() => handleCardTap(brand.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleCardTap(brand.id)
+                      }
+                    }}
                   >
                     <div className="brand-item-inner">
 
@@ -99,6 +104,10 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
                         </div>
                         <div className="brand-item-front-label">
                           <span className="brand-item-name">{brand.name}</span>
+                          <span className="brand-item-tap-hint" style={rxn ? { visibility: 'hidden' } : undefined}>
+                            <span className="hint-hover">hover to flip</span>
+                            <span className="hint-touch">tap to flip</span>
+                          </span>
                         </div>
                         {rxn && (
                           <span className={`brand-item-rxn-stamp brand-item-rxn-stamp--${rxn}`}>
@@ -122,13 +131,6 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
                         {brand.description && (
                           <span className="brand-item-desc">{brand.description}</span>
                         )}
-                        {brand.tags && brand.tags.length > 0 && (
-                          <div className="brand-item-tags">
-                            {brand.tags.slice(0, 4).map((tag) => (
-                              <span key={tag} className={`brand-tag ${tagColorClass(tag)}`}>{tag}</span>
-                            ))}
-                          </div>
-                        )}
                         <div className="brand-item-reactions">
                           {[
                             { key: 'want', label: 'want' },
@@ -138,6 +140,7 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
                             <button
                               key={key}
                               type="button"
+                              aria-pressed={rxn === key}
                               className={`reaction-btn reaction-btn--${key} ${rxn === key ? 'active' : ''}`}
                               onClick={(e) => handleReact(brand.id, key, e)}
                             >
@@ -166,14 +169,22 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
 
       {/* Footer */}
       <div className={`drop-box-footer ${isOpen ? 'visible' : ''}`}>
-        {error && <p className="drop-error">{error}</p>}
-        <button
-          className="btn-primary"
-          onClick={() => handleContinue(onViewProfile)}
-          disabled={submitting || !isOpen || !allRated}
-        >
-          {submitting ? 'saving…' : 'see your profile →'}
-        </button>
+        {submitted ? (
+          <button className="btn-primary" onClick={onViewProfile}>
+            back to profile →
+          </button>
+        ) : (
+          <>
+            {error && <p className="drop-error">{error}</p>}
+            <button
+              className="btn-primary"
+              onClick={() => handleContinue(onViewProfile)}
+              disabled={submitting || !isOpen || !allRated}
+            >
+              {submitting ? 'saving…' : 'see your profile →'}
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

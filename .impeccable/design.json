@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-27T00:00:00.000Z",
+  "title": "Design System: Drop",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Ripe Goldenrod",
+        "canonical": "oklch(0.82 0.20 80)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 80)",
+          "oklch(0.25 0.12 80)",
+          "oklch(0.35 0.14 80)",
+          "oklch(0.48 0.17 80)",
+          "oklch(0.60 0.19 80)",
+          "oklch(0.70 0.20 80)",
+          "oklch(0.82 0.20 80)",
+          "oklch(0.93 0.12 80)"
+        ]
+      },
+      "accent-text": {
+        "role": "primary",
+        "displayName": "Goldenrod Text",
+        "canonical": "oklch(0.54 0.17 75)"
+      },
+      "accent-dim": {
+        "role": "primary",
+        "displayName": "Goldenrod Dim",
+        "canonical": "oklch(0.82 0.20 80 / 0.14)"
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Warm Off-White",
+        "canonical": "oklch(0.99 0.003 72)",
+        "tonalRamp": [
+          "oklch(0.70 0.022 68)",
+          "oklch(0.78 0.022 63)",
+          "oklch(0.87 0.016 65)",
+          "oklch(0.91 0.014 66)",
+          "oklch(0.94 0.010 68)",
+          "oklch(0.97 0.006 70)",
+          "oklch(0.99 0.003 72)",
+          "oklch(1.00 0 0)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Warm Near-Black",
+        "canonical": "oklch(0.17 0.030 55)",
+        "tonalRamp": [
+          "oklch(0.12 0.030 55)",
+          "oklch(0.17 0.030 55)",
+          "oklch(0.28 0.025 55)",
+          "oklch(0.38 0.022 55)",
+          "oklch(0.48 0.018 55)",
+          "oklch(0.56 0.015 55)",
+          "oklch(0.65 0.012 55)",
+          "oklch(0.72 0.010 55)"
+        ]
+      },
+      "like-bg": {
+        "role": "semantic",
+        "displayName": "Want Saffron",
+        "canonical": "oklch(0.93 0.10 80)"
+      },
+      "maybe-bg": {
+        "role": "semantic",
+        "displayName": "Maybe Goldenrod",
+        "canonical": "oklch(0.95 0.05 76)"
+      },
+      "pass-bg": {
+        "role": "semantic",
+        "displayName": "Pass Warm Gray",
+        "canonical": "oklch(0.92 0.008 55)"
+      },
+      "error-ink": {
+        "role": "semantic",
+        "displayName": "Error Red",
+        "canonical": "oklch(0.48 0.18 22)",
+        "tonalRamp": [
+          "oklch(0.20 0.14 22)",
+          "oklch(0.28 0.12 22)",
+          "oklch(0.36 0.15 22)",
+          "oklch(0.48 0.18 22)",
+          "oklch(0.58 0.18 22)",
+          "oklch(0.70 0.16 22)",
+          "oklch(0.84 0.10 22)",
+          "oklch(0.95 0.04 22)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and splash-screen headlines only. The 'drop.' lid mark."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Drop numbers, persona labels, profile page title ('your taste.'), fetching taglines."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Brand sheet names, modal headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Chat bubbles, descriptions, persona copy, taste summary. Default readable body."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Brand tags, group headers, superlative stat labels, dietary labels, reaction badges, all UI chrome below 14px."
+      }
+    },
+    "shadows": [
+      {
+        "name": "container-lift",
+        "value": "0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.07)",
+        "purpose": "Drop box outer container. The single interactable container on the Drop screen. Never applied to cards, panels, or profile surfaces."
+      },
+      {
+        "name": "box-bloom-peak",
+        "value": "0 0 70px oklch(0.82 0.20 80 / 0.22), 0 0 35px oklch(0.82 0.20 80 / 0.14)",
+        "purpose": "Peak glow during box-open animation. Fades to residual (0 0 40px oklch(0.82 0.20 80 / 0.08)) at rest. The only moment color appears in a shadow."
+      },
+      {
+        "name": "box-interior",
+        "value": "inset 0 8px 20px rgba(0,0,0,0.06), inset 4px 0 10px rgba(0,0,0,0.03), inset -4px 0 10px rgba(0,0,0,0.03)",
+        "purpose": "Interior shadow of the drop box body. Adds inset goldenrod glow when box is open."
+      },
+      {
+        "name": "brand-card-ambient",
+        "value": "0 2px 8px rgba(0,0,0,0.07)",
+        "purpose": "Subtle ambient lift on each flip card. Blur capped at 8px. Not paired with a border on the same element."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Primary easing for all state transitions and reveals. Expo-out feel — fast start, long tail."
+      },
+      {
+        "name": "ease-in",
+        "value": "cubic-bezier(0.4, 0, 1, 1)",
+        "purpose": "Exit and leave transitions."
+      },
+      {
+        "name": "duration-instant",
+        "value": "80ms",
+        "purpose": "Active/press state response (scale transforms on buttons and reaction buttons). Imperceptible lag."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Color, opacity, and border transitions. Standard interactive feedback."
+      },
+      {
+        "name": "duration-base",
+        "value": "220ms",
+        "purpose": "Entrance reveals, drop footer fade-in."
+      },
+      {
+        "name": "duration-slow",
+        "value": "350ms",
+        "purpose": "Complex animations: box-open shadow bloom, shadow transition."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "app-max",
+        "value": "480px",
+        "purpose": "Single-column app container. All content is constrained to 480px max-width centered in the viewport."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single primary action per screen. Ripe Goldenrod fill, full-width, 52px height. Responds to interaction through opacity and scale only.",
+      "html": "<button class=\"ds-btn-primary\">get next drop →</button>",
+      "css": ".ds-btn-primary { background: oklch(0.82 0.20 80); color: oklch(0.17 0.030 55); font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; height: 52px; width: 100%; border: none; border-radius: 8px; cursor: pointer; transition: opacity 150ms cubic-bezier(0.16,1,0.3,1), transform 80ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover:not(:disabled) { opacity: 0.88; } .ds-btn-primary:active:not(:disabled) { transform: scale(0.97); } .ds-btn-primary:disabled { opacity: 0.35; cursor: not-allowed; } .ds-btn-primary:focus-visible { outline: 2px solid oklch(0.82 0.20 80); outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action. Transparent, full-width, 44px height. Used for navigation and non-primary actions. In the profile footer, two ghost buttons share flex: 1 each.",
+      "html": "<button class=\"ds-btn-ghost\">← back to drop</button>",
+      "css": ".ds-btn-ghost { background: transparent; border: none; color: oklch(0.38 0.022 55); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; height: 44px; width: 100%; cursor: pointer; transition: color 150ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover:not(:disabled) { color: oklch(0.17 0.030 55); } .ds-btn-ghost:focus-visible { outline: 2px solid oklch(0.82 0.20 80); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Reaction Buttons",
+      "kind": "button",
+      "refersTo": "reaction-btn",
+      "description": "Three-state toggle: want / maybe / pass. Default transparent with strong border. Active state swaps to semantic tint. aria-pressed required.",
+      "html": "<div class=\"ds-rxn-row\"><button class=\"ds-rxn-btn ds-rxn-btn--want\" aria-pressed=\"true\">want</button><button class=\"ds-rxn-btn ds-rxn-btn--maybe\" aria-pressed=\"false\">maybe</button><button class=\"ds-rxn-btn ds-rxn-btn--no\" aria-pressed=\"false\">pass</button></div>",
+      "css": ".ds-rxn-row { display: flex; gap: 8px; } .ds-rxn-btn { flex: 1; height: 52px; min-width: 0; background: transparent; border: 1px solid oklch(0.78 0.022 63); border-radius: 6px; color: oklch(0.38 0.022 55); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background 150ms cubic-bezier(0.16,1,0.3,1), border-color 150ms cubic-bezier(0.16,1,0.3,1), color 150ms cubic-bezier(0.16,1,0.3,1), transform 80ms cubic-bezier(0.16,1,0.3,1); } .ds-rxn-btn:active { transform: scale(0.96); } .ds-rxn-btn:focus-visible { outline: 2px solid oklch(0.82 0.20 80); outline-offset: 2px; } .ds-rxn-btn--want[aria-pressed='true'] { background: oklch(0.93 0.10 80); border-color: oklch(0.78 0.16 80); color: oklch(0.34 0.14 72); } .ds-rxn-btn--maybe[aria-pressed='true'] { background: oklch(0.95 0.05 76); border-color: oklch(0.76 0.08 74); color: oklch(0.36 0.10 68); } .ds-rxn-btn--no[aria-pressed='true'] { background: oklch(0.92 0.008 55); border-color: oklch(0.70 0.012 55); color: oklch(0.44 0.014 55); }"
+    },
+    {
+      "name": "Brand Tags",
+      "kind": "chip",
+      "refersTo": "brand-tag",
+      "description": "Pill labels for brand attributes. No border — surface-raised provides separation. Six deterministic color families; dietary and goal variants use special fills.",
+      "html": "<div class=\"ds-tag-row\"><span class=\"ds-tag ds-tag--c0\">spicy</span><span class=\"ds-tag ds-tag--c1\">fermented</span><span class=\"ds-tag ds-tag--c2\">umami</span><span class=\"ds-tag ds-tag--dietary\">vegan</span><span class=\"ds-tag ds-tag--goal\">high protein</span></div>",
+      "css": ".ds-tag-row { display: flex; flex-wrap: wrap; gap: 8px; } .ds-tag { font-family: 'DM Sans', sans-serif; font-size: 0.6875rem; font-weight: 500; border-radius: 4px; padding: 2px 8px; } .ds-tag--c0 { background: oklch(0.94 0.08 80); color: oklch(0.38 0.16 72); } .ds-tag--c1 { background: oklch(0.93 0.06 148); color: oklch(0.32 0.14 148); } .ds-tag--c2 { background: oklch(0.94 0.06 22); color: oklch(0.38 0.16 22); } .ds-tag--c3 { background: oklch(0.94 0.05 320); color: oklch(0.36 0.13 320); } .ds-tag--c4 { background: oklch(0.94 0.05 248); color: oklch(0.34 0.12 248); } .ds-tag--c5 { background: oklch(0.93 0.05 188); color: oklch(0.34 0.12 188); } .ds-tag--dietary { background: oklch(0.82 0.20 80 / 0.14); color: oklch(0.54 0.17 75); } .ds-tag--goal { background: oklch(0.95 0.05 155); color: oklch(0.38 0.14 155); }"
+    },
+    {
+      "name": "Profile Persona Card",
+      "kind": "card",
+      "refersTo": null,
+      "description": "Signature component. A colored surface (no border) per persona archetype. Six hues at L=0.91, C=0.07 — strong enough to register without an outline.",
+      "html": "<div class=\"ds-persona\" style=\"background: oklch(0.91 0.07 22);\"><span class=\"ds-persona-hint\">early read</span><h2 class=\"ds-persona-label\" style=\"color: oklch(0.40 0.18 22);\">the heat seeker.</h2><p class=\"ds-persona-desc\">every drop, you find the one that burns — and you want it.</p></div>",
+      "css": ".ds-persona { display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 8px; } .ds-persona-hint { font-family: 'DM Sans', sans-serif; font-size: 0.6875rem; font-weight: 500; color: oklch(0.54 0.17 75); letter-spacing: 0.04em; text-transform: lowercase; } .ds-persona-label { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 2.25rem; letter-spacing: -0.02em; line-height: 1.1; text-wrap: balance; } .ds-persona-desc { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: oklch(0.38 0.022 55); line-height: 1.65; }"
+    },
+    {
+      "name": "Brand Sheet",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Bottom sheet modal for full brand detail. Slides up from bottom. Full a11y: focus trap, Escape closes, role=dialog, focus returns to trigger on close.",
+      "html": "<div class=\"ds-sheet-overlay\"><div class=\"ds-sheet\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"ds-sheet-title\"><button class=\"ds-sheet-close\" aria-label=\"Close\">✕</button><div class=\"ds-sheet-image\"></div><div class=\"ds-sheet-body\"><h2 class=\"ds-sheet-name\" id=\"ds-sheet-title\">Omsom</h2><p class=\"ds-sheet-desc\">Bold, unapologetically loud Asian pantry sauces and noodles.</p><a class=\"ds-sheet-link\" href=\"#\">visit site ↗</a><div class=\"ds-rxn-row ds-sheet-rxn\"><button class=\"ds-rxn-btn ds-rxn-btn--want\" aria-pressed=\"false\">want</button><button class=\"ds-rxn-btn ds-rxn-btn--maybe\" aria-pressed=\"false\">maybe</button><button class=\"ds-rxn-btn ds-rxn-btn--no\" aria-pressed=\"false\">pass</button></div></div></div></div>",
+      "css": ".ds-sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: flex-end; animation: ds-fade 0.18s cubic-bezier(0.16,1,0.3,1); } @keyframes ds-fade { from { opacity: 0; } to { opacity: 1; } } .ds-sheet { position: relative; width: 100%; max-width: 480px; margin: 0 auto; background: oklch(0.97 0.006 70); border-top: 1px solid oklch(0.78 0.022 63); border-radius: 12px 12px 0 0; max-height: 88dvh; overflow-y: auto; animation: ds-up 0.28s cubic-bezier(0.16,1,0.3,1); } @keyframes ds-up { from { transform: translateY(100%); } to { transform: translateY(0); } } .ds-sheet-close { position: absolute; top: 12px; right: 12px; background: oklch(0.94 0.010 68); border: none; color: oklch(0.56 0.015 55); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; cursor: pointer; z-index: 1; transition: color 150ms; } .ds-sheet-close:hover { color: oklch(0.17 0.030 55); } .ds-sheet-image { width: 100%; aspect-ratio: 16/9; background: oklch(0.94 0.010 68); } .ds-sheet-body { padding: 20px 20px 32px; display: flex; flex-direction: column; gap: 16px; } .ds-sheet-name { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; color: oklch(0.17 0.030 55); line-height: 1.1; padding-right: 32px; } .ds-sheet-desc { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: oklch(0.38 0.022 55); line-height: 1.65; } .ds-sheet-link { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: oklch(0.54 0.17 75); text-decoration: none; align-self: flex-start; transition: opacity 150ms; } .ds-sheet-link:hover { opacity: 0.75; } .ds-sheet-rxn { margin-top: 8px; } .ds-rxn-row { display: flex; gap: 8px; } .ds-rxn-btn { flex: 1; height: 52px; min-width: 0; background: transparent; border: 1px solid oklch(0.78 0.022 63); border-radius: 6px; color: oklch(0.38 0.022 55); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background 150ms, border-color 150ms, color 150ms, transform 80ms; } .ds-rxn-btn:active { transform: scale(0.96); } .ds-rxn-btn--want[aria-pressed='true'] { background: oklch(0.93 0.10 80); border-color: oklch(0.78 0.16 80); color: oklch(0.34 0.14 72); } .ds-rxn-btn--maybe[aria-pressed='true'] { background: oklch(0.95 0.05 76); border-color: oklch(0.76 0.08 74); color: oklch(0.36 0.10 68); } .ds-rxn-btn--no[aria-pressed='true'] { background: oklch(0.92 0.008 55); border-color: oklch(0.70 0.012 55); color: oklch(0.44 0.014 55); }"
+    },
+    {
+      "name": "Brand Card (Flip Card)",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature component. The core interaction surface in the 2x2 drop grid. Front: image + name. Back: description + reactions. Flips on hover (pointer) or tap (touch). 3D transform on capable devices; opacity crossfade in reduced-motion.",
+      "html": "<div class=\"ds-brand-item ds-brand-item--visible\"><div class=\"ds-brand-inner\"><div class=\"ds-brand-front\"><div class=\"ds-brand-img\"></div><div class=\"ds-brand-front-label\"><span class=\"ds-brand-name\">Omsom</span><span class=\"ds-brand-hint\">tap to flip</span></div></div><div class=\"ds-brand-back\"><div class=\"ds-brand-back-header\"><span class=\"ds-brand-name\">Omsom</span><button class=\"ds-brand-more\">more ↗</button></div><span class=\"ds-brand-desc\">Bold, unapologetically loud Asian pantry sauces and noodles.</span><div class=\"ds-rxn-compact\"><button class=\"ds-rxn-sm ds-rxn-sm--want\" aria-pressed=\"false\">want</button><button class=\"ds-rxn-sm ds-rxn-sm--maybe\" aria-pressed=\"false\">maybe</button><button class=\"ds-rxn-sm ds-rxn-sm--no\" aria-pressed=\"false\">pass</button></div></div></div></div>",
+      "css": ".ds-brand-item { perspective: 900px; border-radius: 6px; opacity: 0; transform: translateY(6px); transition: opacity 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-brand-item--visible { opacity: 1; transform: translateY(0); } .ds-brand-inner { position: relative; width: 100%; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.16,1,0.3,1); border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); } .ds-brand-item:hover .ds-brand-inner { transform: rotateY(180deg); } .ds-brand-front, .ds-brand-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 6px; background: oklch(0.94 0.010 68); } .ds-brand-front { overflow: hidden; position: relative; } .ds-brand-img { width: 100%; aspect-ratio: 3/2; background: oklch(0.91 0.014 66); } .ds-brand-front-label { padding: 4px 8px 8px; } .ds-brand-name { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 0.6875rem; letter-spacing: -0.02em; color: oklch(0.17 0.030 55); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; } .ds-brand-hint { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.6875rem; color: oklch(0.38 0.022 55); margin-top: 1px; } .ds-brand-back { position: absolute; inset: 0; transform: rotateY(180deg); padding: 8px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; } .ds-brand-back-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; } .ds-brand-desc { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: oklch(0.17 0.030 55); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; } .ds-brand-more { background: none; border: none; padding: 12px 4px; margin: -12px -4px; font-family: 'DM Sans', sans-serif; font-size: 0.6875rem; font-weight: 500; color: oklch(0.54 0.17 75); cursor: pointer; flex-shrink: 0; transition: opacity 150ms; } .ds-brand-more:hover { opacity: 0.7; } .ds-rxn-compact { display: flex; gap: 4px; margin-top: auto; } .ds-rxn-sm { flex: 1; height: 44px; background: transparent; border: 1px solid oklch(0.78 0.022 63); border-radius: 4px; color: oklch(0.38 0.022 55); font-family: 'DM Sans', sans-serif; font-size: 0.6875rem; font-weight: 500; cursor: pointer; transition: background 150ms, border-color 150ms, color 150ms, transform 80ms; } .ds-rxn-sm:active { transform: scale(0.96); } .ds-rxn-sm--want[aria-pressed='true'] { background: oklch(0.93 0.10 80); border-color: oklch(0.78 0.16 80); color: oklch(0.34 0.14 72); } .ds-rxn-sm--maybe[aria-pressed='true'] { background: oklch(0.95 0.05 76); border-color: oklch(0.76 0.08 74); color: oklch(0.36 0.10 68); } .ds-rxn-sm--no[aria-pressed='true'] { background: oklch(0.92 0.008 55); border-color: oklch(0.70 0.012 55); color: oklch(0.44 0.014 55); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Warm Curator",
+    "overview": "Drop's visual system is built on one conviction: the recommendation earns trust by not over-explaining itself. Every surface is quiet enough to let the brand be the point. The Ripe Goldenrod accent appears exactly where decisions are made — primary actions, active reactions, the chat avatar, the moment the drop box blooms open — and nowhere else. Its restraint is the signal.\n\nThe ground is a near-white with a barely-perceptible goldenrod tint: warm not as a default food-app gesture, but because the hue bleeds just enough to connect the surfaces without announcing a color scheme. Bricolage Grotesque carries the display moments — drop numbers, persona headlines, 'drop.' on the lid — with compressed typographic weight that anchors each screen. DM Sans handles all the work text: invisible, efficient, earning no attention for itself.\n\nWhat the system explicitly refuses to be: the democratic noise of Yelp, the clinical data surfaces of NielsenIQ, the transactional chrome of DoorDash, the listicle energy of BuzzFeed food content. Where those systems overwhelm with quantity, Drop withholds. The 2×2 box is not a constraint — it is the product.",
+    "keyCharacteristics": [
+      "Goldenrod accent used on ≤10% of any screen; its rarity is the cue, not the color",
+      "Two-family type on a strong contrast axis: compressed display grotesque + warm humanist sans",
+      "Tonal depth (bg → surface → surface-raised) as the primary depth language; shadows reserved for two moments only",
+      "3D flip card as the core interaction metaphor — the reveal earns the reaction",
+      "Reaction vocabulary expressed in three chromatic registers, all derived from the same saffron hue family"
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "--accent (Ripe Goldenrod fill) is for primary interaction surfaces only. Never use it as a decorative stripe, section header tint, or icon fill on a neutral background. If one surface on screen carries goldenrod, the surrounding surfaces must be neutral.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Shadow Rule",
+        "body": "Shadows are structural (the drop box container) or choreographic (the opening bloom). Never decorative. If a new surface needs depth, use the tonal ramp first.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Bloom-Once Rule",
+        "body": "The saffron glow appears only during the box-open animation sequence. Do not repurpose it for hover states, card selections, or profile sections. Its power comes from its singularity.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Display-Only Rule",
+        "body": "Bricolage Grotesque is reserved for display moments: headings, drop labels, brand card names, and the lid logo. It must never appear in body paragraphs, form labels, buttons, or any text smaller than 0.875rem. DM Sans carries all UI chrome.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tracking Floor Rule",
+        "body": "Display tracking is -0.02em — the tightest allowable. At Bricolage Grotesque 800 weight, tighter than -0.03em makes letters touch. Do not push further.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Use --accent (Ripe Goldenrod fill) exclusively for primary interactive surfaces. Use --accent-text for goldenrod-colored text on light backgrounds — the fill lightness (L=0.82) fails text contrast.",
+      "Use the tonal surface ramp (bg → surface → surface-raised) as the primary depth signal before reaching for a shadow.",
+      "Reserve Bricolage Grotesque for display moments: headings, drop number labels, the lid 'drop.' mark, brand card names. DM Sans handles all labels, buttons, and body text.",
+      "Keep --tracking-display at -0.02em. This is the tightest allowable floor for Bricolage Grotesque 800 weight.",
+      "Provide aria-pressed on all reaction buttons and aria-label on icon-only buttons (chat send, sheet close). The reaction model depends on state disclosure.",
+      "Add @media (prefers-reduced-motion: reduce) alternatives for every animation. Card flip becomes an opacity crossfade; entrance animations collapse to instant.",
+      "Respect env(safe-area-inset-bottom) on all sticky footers and full-height pages — the app targets notch and home-indicator devices."
+    ],
+    "donts": [
+      "Don't add borders to persona cards. The tinted surface (L=0.91, C=0.07) carries the identity. A 1px border reads as an AI metadata frame.",
+      "Don't add borders to brand tags. The surface-raised background provides visual separation. A border reads as generated metadata.",
+      "Don't use --ink-disabled (L=0.72) for any readable text. It fails 4.5:1 contrast on --bg. --ink-muted (L=0.56) is the minimum for text users need to read.",
+      "Don't use Ripe Goldenrod on more than one prominent surface per screen.",
+      "Don't add a match score, percentage, or algorithm explanation to any brand recommendation. The recommendation speaks for itself.",
+      "Don't use border-radius above 12px on cards or containers. --radius-lg (12px) is the cap. Full-pill radius (999px) is reserved for tags and reaction badges only.",
+      "Don't make the interface feel like Yelp (democratic noise), NielsenIQ (clinical data density), DoorDash (transactional chrome), or BuzzFeed food content (listicle energy, emoji-laden copy).",
+      "Don't use side-stripe borders (border-left or border-right > 1px) as card or callout accents.",
+      "Don't pair border: 1px solid with box-shadow at blur ≥ 16px on the same element.",
+      "Don't use gradient text (background-clip: text + gradient). Goldenrod is always a flat ink color (--accent-text), never a gradient."
+    ]
+  }
+}

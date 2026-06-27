@@ -31,12 +31,18 @@ export default function App() {
 
   const [screen, setScreen] = useState(savedTaste ? 'fetching' : 'input')
   const [brands, setBrands] = useState([])
+  const [reactions, setReactions] = useState({})
+  const [dropSubmitted, setDropSubmitted] = useState(false)
   const [dropKey, setDropKey] = useState(0)
   const [dropNum, setDropNum] = useState(getStoredDropNum)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [exhausted, setExhausted] = useState(false)
   const initFetched = useRef(false)
+
+  function handleReact(brandId, key) {
+    setReactions((prev) => ({ ...prev, [brandId]: prev[brandId] === key ? null : key }))
+  }
 
   useEffect(() => {
     if (savedTaste && !initFetched.current) {
@@ -55,6 +61,8 @@ export default function App() {
     try {
       const data = await getRecommendations(tasteDescription, userId)
       setBrands(data.drop)
+      setReactions({})
+      setDropSubmitted(false)
       setDropKey((k) => k + 1)
       setExhausted(false)
       setScreen('drop')
@@ -81,6 +89,7 @@ export default function App() {
   }
 
   function handleViewProfile() {
+    setDropSubmitted(true)
     setScreen('profile')
   }
 
@@ -89,7 +98,7 @@ export default function App() {
   }
 
   function handleRetakeQuiz() {
-    setScreen('input')
+    setScreen('update-taste')
   }
 
   async function handleResetHistory() {
@@ -128,12 +137,19 @@ export default function App() {
         <TasteInput onSubmit={handleSubmit} loading={loading} />
       )}
 
+      {screen === 'update-taste' && (
+        <TasteInput onSubmit={handleSubmit} loading={loading} skipSplash />
+      )}
+
       {screen === 'drop' && (
         <Drop
           key={dropKey}
           brands={brands}
           userId={userId}
           dropNum={dropNum}
+          reactions={reactions}
+          onReact={handleReact}
+          submitted={dropSubmitted}
           onRankingsSubmitted={handleRankingsSubmitted}
           onViewProfile={handleViewProfile}
         />

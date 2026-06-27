@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { sendChatMessage } from '../api/recommendations'
 
-const OPENING = "hi! welcome to drop 👋 i'm here to match you with emerging food and drink brands you'll actually love. i'll ask you a few questions, put together a box of 4 brands for you to try, and every time you rate a drop, the next one gets more dialed in. you'll build up a taste profile over time too. okay — what have you been eating and drinking lately?"
+const OPENING = "hi! welcome to drop 👋 i'm here to match you with emerging food and drink brands you'll actually love. tell me about your taste, i'll put together a box of 4 — rate them, and the next drop gets sharper. first up: what have you been eating and drinking a lot of lately?"
 const SURPRISE = "open to everything — adventurous and curious, no strong preferences. surprise me with something interesting and emerging."
 
-export default function TasteInput({ onSubmit, loading }) {
-  const [mode, setMode] = useState('splash')
+export default function TasteInput({ onSubmit, loading, skipSplash }) {
+  const [mode, setMode] = useState(skipSplash ? 'chat' : 'splash')
   const [messages, setMessages] = useState([{ role: 'assistant', content: OPENING }])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
