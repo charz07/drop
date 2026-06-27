@@ -73,6 +73,11 @@ export default function Drop({ brands, userId, onRankingsSubmitted, onViewProfil
                             ? <img src={brand.image_url} alt={brand.name} onError={(e) => { e.currentTarget.style.display = 'none' }} />
                             : <div className="brand-item-placeholder">{brand.name[0]}</div>
                           }
+                          {rxn && (
+                            <span className={`brand-item-rxn-stamp brand-item-rxn-stamp--${rxn}`}>
+                              {rxn === 'no' ? '✕' : rxn}
+                            </span>
+                          )}
                         </div>
                         <div className="brand-item-front-label">
                           <span className="brand-item-name">{brand.name}</span>

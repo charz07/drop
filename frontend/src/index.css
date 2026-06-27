@@ -536,6 +536,7 @@ body {
 }
 
 .brand-item-image {
+  position: relative;
   width: 100%;
   aspect-ratio: 3 / 2;
   overflow: hidden;
@@ -638,16 +639,35 @@ body {
   padding: 0;
 }
 
-/* Dot on front to show a reaction has been set */
-.brand-item:has(.reaction-btn.active) .brand-item-front::after {
-  content: '';
+/* Reaction stamp on front image — visible without hovering */
+.brand-item-rxn-stamp {
   position: absolute;
   bottom: var(--space-2);
   right: var(--space-2);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.brand-item-rxn-stamp--want {
   background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.brand-item-rxn-stamp--maybe {
+  background: #c8a96e;
+  color: #1a1200;
+}
+
+.brand-item-rxn-stamp--no {
+  background: rgba(60, 60, 60, 0.92);
+  color: var(--ink-secondary);
 }
 
 @media (prefers-reduced-motion: reduce) {
