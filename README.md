@@ -1,5 +1,7 @@
 # Drop
 
+**[vdmi.vercel.app](https://vdmi.vercel.app)**
+
 A taste-profile-driven discovery platform for emerging food and drink brands. Drop learns your palate through conversation, then surfaces 4 curated brands per session matched by embedding similarity. React to each one — the algorithm learns and every future drop gets sharper.
 
 ## How it works
