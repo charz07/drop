@@ -4,7 +4,7 @@
 
 Emerging food and drink brands make great products. Most of them never reach the right person.
 
-Drop is a taste-matched discovery platform that puts emerging CPG brands in front of consumers whose palate actually fits. Brands get precision placement — not paid reach, not demographic guessing, but embedding-based matching against a real taste profile built from conversation. Consumers get a curated digital sample box, personalized to what they actually eat.
+**Drop is a taste-matched discovery platform that puts emerging CPG brands in front of consumers whose palate actually fits.** Brands get precision placement — not paid reach, not demographic guessing, but embedding-based matching against a real taste profile built from conversation. Consumers get a curated digital sample box, personalized to what they actually eat.
 
 **For brands:** your product surfaces inside a drop of 4, sent to users whose taste profile matches your flavor vector. Every reaction (want / maybe / pass) is a signal — who wants you, who doesn't, and what that says about your audience.
 
