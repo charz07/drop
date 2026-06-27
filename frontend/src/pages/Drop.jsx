@@ -140,17 +140,10 @@ export default function Drop({ brands, userId, dropNum, onRankingsSubmitted, onV
         )}
         <button
           className="btn-primary"
-          onClick={() => handleContinue(onRankingsSubmitted)}
-          disabled={submitting || !isOpen || !allRated}
-        >
-          {submitting ? 'Saving…' : 'Get next drop →'}
-        </button>
-        <button
-          className="btn-ghost"
           onClick={() => handleContinue(onViewProfile)}
           disabled={submitting || !isOpen || !allRated}
         >
-          See your profile
+          {submitting ? 'saving…' : 'see your profile →'}
         </button>
       </div>
     </div>
