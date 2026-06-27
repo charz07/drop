@@ -38,6 +38,16 @@ export async function submitRejections(brandIds, userId) {
   return res.json()
 }
 
+export async function sendChatMessage(messages) {
+  const res = await fetch(`${API_BASE}/chat/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages }),
+  })
+  if (!res.ok) throw new Error('chat failed')
+  return res.json()
+}
+
 export function trackClick(brandId, userId) {
   fetch(`${API_BASE}/analytics/click?user_id=${userId}&brand_id=${brandId}`, { method: 'POST' })
     .catch(() => {})

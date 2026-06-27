@@ -1,23 +1,62 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { sendChatMessage } from '../api/recommendations'
 
+const OPENING = 'what have you been eating and drinking lately?'
 const SURPRISE = "open to everything — adventurous and curious, no strong preferences. surprise me with something interesting and emerging."
 
 export default function TasteInput({ onSubmit, loading }) {
   const [mode, setMode] = useState('splash')
-  const [text, setText] = useState('')
+  const [messages, setMessages] = useState([{ role: 'assistant', content: OPENING }])
+  const [input, setInput] = useState('')
+  const [thinking, setThinking] = useState(false)
+  const [done, setDone] = useState(false)
+  const [tasteDescription, setTasteDescription] = useState(null)
+  const bottomRef = useRef(null)
+  const inputRef = useRef(null)
 
-  const canSubmit = text.trim().length >= 10
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, thinking])
 
-  function handleSubmit() {
-    if (canSubmit) onSubmit(text.trim())
-  }
+  useEffect(() => {
+    if (mode === 'chat') inputRef.current?.focus()
+  }, [mode])
 
-  function handleSurprise() {
-    onSubmit(SURPRISE)
+  async function handleSend() {
+    const text = input.trim()
+    if (!text || thinking || done) return
+
+    const userMsg = { role: 'user', content: text }
+    const next = [...messages, userMsg]
+    setMessages(next)
+    setInput('')
+    setThinking(true)
+
+    try {
+      const res = await sendChatMessage(next)
+      setMessages((prev) => [...prev, { role: 'assistant', content: res.message }])
+      if (res.done) {
+        setDone(true)
+        setTasteDescription(res.taste_description)
+      }
+    } catch {
+      setMessages((prev) => [...prev, { role: 'assistant', content: 'something went wrong. try again?' }])
+    } finally {
+      setThinking(false)
+    }
   }
 
   function handleKeyDown(e) {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSubmit) handleSubmit()
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  function handleInputChange(e) {
+    setInput(e.target.value)
+    e.target.style.height = 'auto'
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
   }
 
   if (mode === 'splash') {
@@ -25,10 +64,10 @@ export default function TasteInput({ onSubmit, loading }) {
       <div className="page taste-input-page splash-page">
         <h1 className="app-title">drop.</h1>
         <p className="splash-tagline">taste-matched brands, dropped to you.</p>
-        <button type="button" className="btn-primary" onClick={() => setMode('intake')} disabled={loading}>
+        <button type="button" className="btn-primary" onClick={() => setMode('chat')} disabled={loading}>
           find my taste →
         </button>
-        <button type="button" className="btn-ghost" onClick={handleSurprise} disabled={loading}>
+        <button type="button" className="btn-ghost" onClick={() => onSubmit(SURPRISE)} disabled={loading}>
           surprise me
         </button>
       </div>
@@ -36,31 +75,50 @@ export default function TasteInput({ onSubmit, loading }) {
   }
 
   return (
-    <div className="page taste-input-page intake-page">
-      <p className="intake-question">what have you been eating and drinking lately?</p>
-      <textarea
-        className="intake-textarea"
-        placeholder={"e.g. Fly By Jing chili crisp, anything fermented, Japanese convenience store snacks — skip anything sweet or mainstream…"}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        rows={6}
-        autoFocus
-      />
-      <div className="quiz-footer">
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={handleSubmit}
-          disabled={loading || !canSubmit}
-        >
-          {loading ? 'finding your drop.' : 'find my drop →'}
-        </button>
-        <div className="quiz-footer-row">
-          <button type="button" className="quiz-back-btn" onClick={() => setMode('splash')} disabled={loading}>
-            ← back
+    <div className="chat-page">
+      <div className="chat-messages">
+        {messages.map((m, i) => (
+          <div key={i} className={`chat-bubble chat-bubble--${m.role}`}>
+            {m.content}
+          </div>
+        ))}
+        {thinking && (
+          <div className="chat-bubble chat-bubble--assistant chat-bubble--thinking">
+            <span className="chat-dot" />
+            <span className="chat-dot" />
+            <span className="chat-dot" />
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className="chat-footer">
+        {done ? (
+          <button className="btn-primary" onClick={() => onSubmit(tasteDescription)} disabled={loading}>
+            {loading ? 'finding your drop.' : 'see my drop →'}
           </button>
-        </div>
+        ) : (
+          <div className="chat-input-row">
+            <textarea
+              ref={inputRef}
+              className="chat-input"
+              placeholder="type here…"
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              rows={1}
+              disabled={thinking}
+            />
+            <button
+              type="button"
+              className="chat-send-btn"
+              onClick={handleSend}
+              disabled={!input.trim() || thinking}
+            >
+              →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
