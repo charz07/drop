@@ -492,24 +492,47 @@ body {
   transform: translateY(0);
 }
 
-/* Brand card inside the box */
+/* Brand card — flip on hover */
 .brand-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  perspective: 900px;
   border-radius: var(--radius-sm);
-  overflow: hidden;
   opacity: 0;
   transform: translateY(6px);
   transition:
     opacity 0.3s var(--ease-out),
-    transform 0.3s var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
+    transform 0.3s var(--ease-out);
   transition-delay: calc(var(--stagger, 0) * 70ms + 0.65s);
 }
 
 .drop-box-interior.visible .brand-item {
   opacity: 1;
   transform: translateY(0);
+}
+
+.brand-item-inner {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius-sm);
+}
+
+.brand-item:hover .brand-item-inner {
+  transform: rotateY(180deg);
+}
+
+.brand-item-front,
+.brand-item-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* Front: image fills top, name sits below */
+.brand-item-front {
+  overflow: hidden;
 }
 
 .brand-item-image {
@@ -538,11 +561,8 @@ body {
   color: var(--ink-disabled);
 }
 
-.brand-item-body {
-  padding: var(--space-2) var(--space-2) var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.brand-item-front-label {
+  padding: var(--space-1) var(--space-2) var(--space-2);
 }
 
 .brand-item-name {
@@ -555,19 +575,98 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
 }
 
-/* Compact reactions inside box cards */
-.brand-item-reactions {
+/* Back: description + tags + reactions */
+.brand-item-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+  padding: var(--space-2);
   display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.brand-item-back .brand-item-name {
+  font-size: 0.6rem;
+  color: var(--ink-secondary);
+  white-space: normal;
+}
+
+.brand-item-desc {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  color: var(--ink);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.brand-item-tags {
+  display: flex;
+  flex-wrap: wrap;
   gap: 3px;
 }
 
+.brand-item-tags .brand-tag {
+  font-size: 0.5rem;
+  padding: 1px 5px;
+  height: auto;
+  line-height: 1.6;
+}
+
+/* Compact reactions on back face */
+.brand-item-reactions {
+  display: flex;
+  gap: 3px;
+  margin-top: auto;
+}
+
 .brand-item-reactions .reaction-btn {
-  height: 30px;
-  font-size: 0.65rem;
+  flex: 1;
+  height: 28px;
+  font-size: 0.6rem;
   border-radius: var(--radius-xs);
   padding: 0;
+}
+
+/* Dot on front to show a reaction has been set */
+.brand-item:has(.reaction-btn.active) .brand-item-front::after {
+  content: '';
+  position: absolute;
+  bottom: var(--space-2);
+  right: var(--space-2);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-item-inner {
+    transition: none;
+  }
+  .brand-item-front {
+    transition: opacity 0.15s;
+  }
+  .brand-item:hover .brand-item-front {
+    opacity: 0;
+  }
+  .brand-item-back {
+    transition: opacity 0.15s;
+    opacity: 0;
+  }
+  .brand-item:hover .brand-item-back {
+    opacity: 1;
+  }
 }
 
 /* Footer below the box */
