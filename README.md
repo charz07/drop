@@ -161,7 +161,7 @@ Component snippets for the live panel live in [`.impeccable/design.json`](.impec
 
 ## Deployment
 
-**Backend (Railway):** Configured via `railway.toml`. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`. Restart policy: `on_failure`.
+**Backend (Render):** Configured via `render.yaml`. Build command: `pip install -r requirements.txt`. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`.
 
 **Frontend (Vercel):** Auto-deploys from `main`. Build command: `npm run build`. Output: `dist/`.
 
