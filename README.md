@@ -23,7 +23,7 @@ For the brands inside the box, it's a direct line to the people most likely to l
 | Layer | Technology |
 |---|---|
 | Frontend | React 18 + Vite, hosted on Vercel |
-| Backend | FastAPI (Python), hosted on Railway |
+| Backend | FastAPI (Python), hosted on Render |
 | Database | Supabase (Postgres + pgvector) |
 | Embeddings | Google Gemini `gemini-embedding-001` |
 | Chat LLM | Groq `llama-3.3-70b-versatile` |
@@ -103,7 +103,7 @@ SUPABASE_KEY=          # service role key (not anon — needs write access)
 
 ### Frontend
 
-No `.env` required locally. The API base URL defaults to `http://localhost:8000`. For production, set `VITE_API_URL` to your Railway deployment URL.
+No `.env` required locally. The API base URL defaults to `http://localhost:8000`. For production, set `VITE_API_URL` to your Render deployment URL.
 
 ## API endpoints
 
