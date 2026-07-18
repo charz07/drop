@@ -10,7 +10,7 @@ A taste-profile-driven CPG discovery platform. Users describe their taste in nat
 - Embeddings: OpenAI API (text-embedding-3-small)
 - Rationale generation: Anthropic Claude API
 - Frontend hosting: Vercel
-- Backend hosting: Render
+- Backend hosting: Fly.io
 
 ## Project structure
 /frontend — React Vite app

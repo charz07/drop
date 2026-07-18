@@ -23,7 +23,7 @@ For the brands inside the box, it's a direct line to the people most likely to l
 | Layer | Technology |
 |---|---|
 | Frontend | React 18 + Vite, hosted on Vercel |
-| Backend | FastAPI (Python), hosted on Render |
+| Backend | FastAPI (Python), hosted on Fly.io |
 | Database | Supabase (Postgres + pgvector) |
 | Embeddings | Google Gemini `gemini-embedding-001` |
 | Chat LLM | Groq `llama-3.3-70b-versatile` |
@@ -103,7 +103,7 @@ SUPABASE_KEY=          # service role key (not anon — needs write access)
 
 ### Frontend
 
-No `.env` required locally. The API base URL defaults to `http://localhost:8000`. For production, set `VITE_API_URL` to your Render deployment URL.
+No `.env` required locally. The API base URL defaults to `http://localhost:8000`. For production, set `VITE_API_URL` to your Fly.io deployment URL.
 
 ## API endpoints
 
@@ -161,7 +161,7 @@ Component snippets for the live panel live in [`.impeccable/design.json`](.impec
 
 ## Deployment
 
-**Backend (Render):** Configured via `render.yaml`. Build command: `pip install -r requirements.txt`. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+**Backend (Fly.io):** Configured via `Dockerfile` + `fly.toml`. Deploys via `fly deploy` from `backend/`.
 
 **Frontend (Vercel):** Auto-deploys from `main`. Build command: `npm run build`. Output: `dist/`.
 
